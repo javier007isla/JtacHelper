@@ -1,3 +1,13 @@
+<!-- Discord / Open Graph Embed -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Javiito's JTAC Helper">
+<meta property="og:description" content="Herramienta JTAC para Check-In, Gameplan y CAS 3/6/9-Line.">
+<meta property="og:url" content="http://jtac.javiito.cl">
+<meta property="og:image" content="http://jtac.javiito.cl/IMG1.png">
+
+<!-- Color de la barra lateral del embed -->
+<meta name="theme-color" content="#2e7d32">
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,261 +21,852 @@
 --danger:#b04444;--text:#d8e0d8;
 --jtac:#6fa86f;--air:#6fa0c8;
 }
-body{margin:0;font-family:Consolas,monospace;background:var(--bg);color:var(--text)}
-header{padding:12px;text-align:center;border-bottom:2px solid var(--accent)}
-.container{max-width:1100px;margin:auto;padding:10px}
-.section{background:var(--panel);border:1px solid #1e2a22;border-radius:6px;margin-bottom:12px}
-.section summary{cursor:pointer;padding:10px;font-weight:bold;color:var(--accent)}
-.section-content{padding:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
-input,select{width:100%;background:#0c110d;border:1px solid #2a3a30;color:var(--text);padding:6px;border-radius:4px;font-family:inherit;font-size:.85rem}
-button{background:var(--accent);border:none;padding:8px 12px;border-radius:4px;font-weight:bold;cursor:pointer}
-.output{background:#070a08;border:1px dashed #2a3a30;padding:8px;white-space:pre-wrap;font-size:.8rem;margin-top:8px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Consolas,monospace;background:var(--bg);color:var(--text);line-height:1.4}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:2px solid var(--accent);background:linear-gradient(180deg,#0d130f,#0b0f0c)}
+header h1{margin:0;font-size:1.25rem;font-weight:600}
+.container{max-width:1100px;margin:auto;padding:12px}
+.section{background:var(--panel);border:1px solid #1e2a22;border-radius:6px;margin-bottom:12px;overflow:hidden}
+.section summary{cursor:pointer;padding:10px 12px;font-weight:bold;color:var(--accent);background:#0e1411}
+.section-content{padding:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+input,select,textarea{width:100%;background:#0c110d;border:1px solid #2a3a30;color:var(--text);padding:7px 8px;border-radius:4px;font-family:inherit;font-size:.85rem}
+button{background:var(--accent);border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:4px;font-weight:600;cursor:pointer;color:var(--text)}
+.output{background:#070a08;border:1px dashed #2a3a30;padding:10px;white-space:pre-wrap;font-size:.8rem;margin-top:8px;border-radius:4px}
 .hidden{display:none}
 .jtac{color:var(--jtac);font-weight:bold}
 .air{color:var(--air);font-weight:bold}
 .danger{color:var(--danger);font-weight:bold}
 .small{font-size:.75rem;color:#9fb59f}
-.grid label{display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid #2a3a30;border-radius:4px;background:#0c110d;cursor:pointer;}
-.grid label:hover{background:#111813;}
-.grid label input[type="checkbox"]{margin:0;width:14px;height:14px;cursor:pointer;}
-.grid{gap:8px;}
-.grid input,
-.grid select,
-.grid textarea{padding:6px 8px;margin:0;box-sizing:border-box;}
-
+.grid label{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #2a3a30;border-radius:4px;background:#0c110d;cursor:pointer}
+.grid label:hover{background:#111813}
+.grid label input[type="checkbox"]{margin:0;width:14px;height:14px;cursor:pointer}
+.mode-toggle{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.toggle-input{display:none}
+.toggle-label{display:inline-flex;position:relative;width:220px;border-radius:999px;background:#122216;padding:6px;cursor:pointer;align-items:center}
+.toggle-label .left,.toggle-label .right{flex:1;text-align:center;color:#9fb59f;font-size:.9rem}
+.toggle-label .knob{position:absolute;top:50%;left:6px;width:100px;height:28px;background:#0b0f0c;border-radius:20px;transition:left .18s,transform .18s;transform:translateY(-50%)}
+.toggle-input:checked + .toggle-label .knob{left:calc(100% - 6px - 100px)}
+#clearBtn{padding:6px 10px}
+.small-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:4px 8px;border-radius:4px;font-size:.8rem;cursor:pointer;margin-left:auto}
+h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
+.section-title{padding:10px 12px;font-weight:bold;color:var(--accent);background:#0e1411;border-bottom:1px solid #1e2a22}
+.section[data-section="cas"] .small{margin-bottom:6px}
+.section[data-section="cas"] #linerSelect{margin:6px 0}
+.section[data-section="cas"] .remarks-toggle{margin-top:6px}
+.section[data-section="missions"] .small{margin-bottom:6px}
+.section[data-section="missions"] #missionList{margin-bottom:0}
+.section[data-section="remarks"] .vector-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}
+.section[data-section="remarks"] .vector-row label{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #2a3a30;border-radius:4px;background:#0c110d;cursor:pointer;white-space:nowrap}
+.section[data-section="remarks"] .vector-fields{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.section[data-section="remarks"] .vector-fields.hidden{display:none}
+.section[data-section="remarks"] .vector-fields input{width:140px}
+.section[data-section="remarks"] .vector-fields .pm{font-weight:700;justify-self:center}
+.section[data-section="remarks"] .danger-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.section[data-section="remarks"] .danger-row label{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #2a3a30;border-radius:4px;background:#0c110d;cursor:pointer;white-space:nowrap}
+.section[data-section="remarks"] .danger-fields{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.section[data-section="remarks"] .danger-fields.hidden{display:none}
+.section[data-section="remarks"] .danger-fields input{width:140px}
+.section[data-section="remarks"] .danger-row.danger label{border-color:var(--danger)}
+.section[data-section="remarks"] .danger-row.danger input[type="checkbox"]{accent-color:var(--danger)}
+.section[data-section="remarks"] .preauth-row{margin-top:8px;gap:10px}
+.section[data-section="remarks"] .preauth-row label{white-space:nowrap}
+.section[data-section="remarks"] .ally-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #2a3a30;border-radius:4px;background:#0c110d;cursor:pointer;white-space:nowrap}
+.section[data-section="remarks"] .ally-row.ally-active{color:#3b5f8a;border-color:#3b5f8a}
+.section[data-section="remarks"] .ally-row.ally-active input[type="checkbox"]{accent-color:#3b5f8a}
+.ally-text{color:#3b5f8a;font-weight:600}
+.section[data-section="remarks"] .dv-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px}
+.section[data-section="remarks"] .dv-row > .danger-row,
+.section[data-section="remarks"] .dv-row > .vector-row{margin-top:0}
+@media (max-width: 520px){
+  .section[data-section="remarks"] .vector-row,
+  .section[data-section="remarks"] .danger-row{align-items:flex-start}
+  .section[data-section="remarks"] .dv-row{flex-direction:column}
+  .section[data-section="remarks"] .vector-fields,
+  .section[data-section="remarks"] .danger-fields{width:100%}
+  .section[data-section="remarks"] .vector-fields input,
+  .section[data-section="remarks"] .danger-fields input{width:100%}
+  .section[data-section="remarks"] .vector-fields{flex-wrap:wrap}
+  .section[data-section="remarks"] .vector-fields input#vectorFinalDeg{order:1; width:calc(100% - 36px)}
+  .section[data-section="remarks"] .vector-fields .pm{order:2; margin-left:auto}
+  .section[data-section="remarks"] .vector-fields input#vectorFinalVar{order:3; width:100%}
+}
+.section[data-section="gen"] .mode-toggle{margin-top:8px}
+.section[data-section="gen"] .output{margin-top:8px}
 </style>
 </head>
-
 <body>
-<header><h1>JTAC Tactical Helper</h1></header>
+<header><h1>JTAC Tactical Helper</h1><button id="clearBtn" onclick="clearAll()">Limpiar todo</button></header>
 <div class="container">
-
-<!-- CALLSIGNS -->
-<details class="section">
+<details class="section" data-section="callsigns">
 <summary>CALLSIGNS</summary>
 <div class="section-content grid">
-<input id="cs_jtac" placeholder="JTAC / FAC Callsign">
-<!-- <input id="cs_ground" placeholder="Unidad terrestre"> -->
+  <input id="cs_jtac" placeholder="JTAC / FAC Callsign">
 </div>
 </details>
 
-<!-- CHECK-IN -->
-<details class="section">
+<details class="section" data-section="air">
 <summary>CHECK-IN AERONAVES</summary>
 <div class="section-content">
 
-<select id="airSelect" onchange="switchAir()">
-<option value="0">Aeronave 1</option>
-<option value="1">Aeronave 2</option>
-<option value="2">Aeronave 3</option>
-</select>
-<div class="small">La aeronave seleccionada es la ACTIVA</div>
-
+<div class="small">Aeronaves disponibles | La aeronave seleccionada es la ACTIVA</div>
+<div class="grid" id="airList">
+  <label><input type="checkbox" id="air_present_0"> Aeronave 1</label>
+  <label><input type="checkbox" id="air_present_1"> Aeronave 2</label>
+  <label><input type="checkbox" id="air_present_2"> Aeronave 3</label>
+</div>
+<br>
 <div class="grid">
-<input id="air_cs" placeholder="Callsign">
-<input id="air_type" placeholder="Tipo aeronave">
-<input id="air_weap" placeholder="Armamento">
-<input id="air_time" placeholder="Playtime">
-<input id="air_sens" placeholder="Sensores">
-<input id="air_fuel" placeholder="Fuel">
+  <input id="air_l1" placeholder="L1 Callsign">
+  <input id="air_l2" placeholder="L2 Aeronave">
+  <input id="air_l3" placeholder="L3 Posición">
+  <input id="air_l4" placeholder="L4 Armamento">
+  <input id="air_l5" placeholder="L5 Playtime">
+  <input id="air_l6" placeholder="L6 Código de aborto">
+  <input id="air_l7" placeholder="L7 Remarks">
+</div>
+
+</div>
+</details>
+<div class="section" data-section="missions">
+  <div class="section-title">MISIONES</div>
+  <div class="section-content">
+    <div class="grid" id="missionList">
+      <label><input type="checkbox" id="mission_present_0"> Misión 1 <button class="small-btn" id="mission_clear_0" title="Limpiar misión">🗑️</button></label>
+      <label><input type="checkbox" id="mission_present_1"> Misión 2 <button class="small-btn" id="mission_clear_1" title="Limpiar misión">🗑️</button></label>
+      <label><input type="checkbox" id="mission_present_2"> Misión 3 <button class="small-btn" id="mission_clear_2" title="Limpiar misión">🗑️</button></label>
+    </div>
+  </div>
+</div>
+<details class="section" data-section="gameplan">
+<summary>GAMEPLAN</summary>
+<div class="section-content">
+<h3>Tipo de Control</h3>
+<div class="grid">
+  <label><input type="checkbox" name="castype" value="Tipo 1"> CAS Tipo 1</label>
+  <label><input type="checkbox" name="castype" value="Tipo 2"> CAS Tipo 2</label>
+  <label><input type="checkbox" name="castype" value="Tipo 3"> CAS Tipo 3</label>
+</div>
+<h3>Método de Ataque</h3>
+<div class="grid">
+  <label><input type="checkbox" name="attackmethod" value="BOT"> Bomb on Target</label>
+  <label><input type="checkbox" name="attackmethod" value="BOC"> Bomb on Coordinate</label>
+</div>
+<h3>Munición Solicitada</h3>
+<div class="grid">
+  <input id="req_munition" placeholder="Ej: GBU-12 / Rockets / Gun run">
 </div>
 
 </div>
 </details>
 
-<!-- CAS -->
-<details class="section">
+<details class="section" data-section="cas">
 <summary>CAS (3 / 6 / 9 LINE)</summary>
 <div class="section-content">
-
 <select id="linerSelect" onchange="updateLiner()">
 <option value="3">3-Line</option>
 <option value="6">6-Line</option>
 <option value="9" selected>9-Line</option>
 </select>
-
 <div class="grid" id="linerFields">
 <input data-line="1" placeholder="L1 IP / BP">
 <input data-line="2" placeholder="L2 Heading">
-<input data-line="3" placeholder="L3 Distancia">
+<input data-line="3" type="number" inputmode="numeric" placeholder="L3 Distancia">
 <input data-line="4" placeholder="L4 Elevación">
 <input data-line="5" placeholder="L5 Descripción objetivo">
-<input data-line="6" placeholder="L6 Ubicación objetivo">
+<input data-line="6" placeholder="L6 Coordenadas">
 <input data-line="7" placeholder="L7 Tipo de marcación">
 <input data-line="8" placeholder="L8 Tropas amigas">
-<input data-line="9" placeholder="L9 Egress">
-<input id="casRemarks" placeholder="REMARKS (final / restricciones / notas)">
+<input data-line="9" placeholder="L9 Egreso">
 </div>
-
-<br>
-
-<div class="grid">
-<label><input type="checkbox" name="castype" value="Type 1"> CAS Type 1</label>
-<label><input type="checkbox" name="castype" value="Type 2"> CAS Type 2</label>
-<label><input type="checkbox" name="castype" value="Type 3"> CAS Type 3</label>
-<label class="danger"><input type="checkbox" id="dangerClose"> Danger Close</label>
+<div class="grid remarks-toggle">
+<label><input type="checkbox" id="includeRemarks"> Remarks</label>
 </div>
-
-<br>
-<button onclick="genCAS('radio')">🎙 Voz corrida</button>
-<button onclick="genCAS('texto')">📄 Texto estructurado</button>
-
-<div id="casOutput" class="output"></div>
-
 </div>
 </details>
 
-<!-- ARTILLERÍA -->
-<!--
-<details class="section">
-<summary>ARTILLERÍA · CALL FOR FIRE</summary>
+<details class="section" data-section="remarks">
+<summary>REMARKS</summary>
 <div class="section-content">
-
-<div class="grid">
-<select id="arty_type">
-  <option value="Adjust Fire">Adjust Fire</option>
-  <option value="Fire for Effect">Fire for Effect</option>
-</select>
-<input id="arty_target" placeholder="Ubicación objetivo">
-<input id="arty_desc" placeholder="Descripción del objetivo">
-<select id="arty_method">
-  <option value="Polar">Polar</option>
-  <option value="Grid">Grid</option>
-  <option value="Shift">Shift from Known Point</option>
-</select>
-<input id="arty_ammo" placeholder="Munición / efecto deseado">
-<label class="danger">
-  <input type="checkbox" id="arty_danger"> Danger Close
-</label>
-</div>
-
-<br>
-<button onclick="genARTY('radio')">🎙 Voz corrida</button>
-<button onclick="genARTY('texto')">📄 Texto estructurado</button>
-
-<div id="artyOutput" class="output"></div>
-
+  <div class="grid preauth-row hidden" id="preauthRow">
+    <label><input type="checkbox" id="preauthToggle"> Preautorizado</label>
+    <label class="ally-row" id="alliesInAreaLabel"><input type="checkbox" id="alliesInAreaToggle"> Aliados en area</label>
+  </div>
+  <div class="dv-row">
+    <div class="danger-row" id="dangerCloseRow">
+      <label id="dangerCloseLabel"><input type="checkbox" id="dangerCloseToggle"> Danger close</label>
+      <div class="danger-fields hidden" id="dangerCloseFields">
+        <input id="dangerCloseDeg" type="number" inputmode="numeric" placeholder="Grados (0-360)">
+        <input id="dangerCloseDist" type="number" inputmode="numeric" placeholder="Metros">
+      </div>
+    </div>
+    <div class="vector-row">
+      <label><input type="checkbox" id="vectorFinalToggle"> Vector final</label>
+      <div class="vector-fields hidden" id="vectorFinalFields">
+        <input id="vectorFinalDeg" type="number" inputmode="numeric" placeholder="Grados (0-360)">
+        <span class="pm">±</span>
+        <input id="vectorFinalVar" type="number" inputmode="numeric" placeholder="Grados">
+      </div>
+    </div>
+  </div>
+  <textarea id="casRemarks" placeholder="Remarks" rows="4" style="margin-top:8px"></textarea>
 </div>
 </details>
--->
 
+<div class="section" data-section="gen">
+  <div class="section-title">GENERADOR</div>
+  <div class="section-content">
+    <div class="mode-toggle">
+      <input type="checkbox" id="cas_mode_radio" class="toggle-input" checked>
+      <label for="cas_mode_radio" class="toggle-label">
+        <span class="left">Voz corrida</span>
+        <span class="right">Texto</span>
+        <span class="knob"></span>
+      </label>
+      <button id="cas_gen">Generar</button>
+    </div>
+    <div id="casOutput" class="output"></div>
+  </div>
 </div>
 
+
+
+</div>
 <script>
-const airStore=[{},{},{}];
-let currentAir=0;
+const csJtac = document.getElementById('cs_jtac');
+const airPresentEls = [
+  document.getElementById('air_present_0'),
+  document.getElementById('air_present_1'),
+  document.getElementById('air_present_2')
+];
+const airL1 = document.getElementById('air_l1');
+const airL2 = document.getElementById('air_l2');
+const airL3 = document.getElementById('air_l3');
+const airL4 = document.getElementById('air_l4');
+const airL5 = document.getElementById('air_l5');
+const airL6 = document.getElementById('air_l6');
+const airL7 = document.getElementById('air_l7');
+const linerSelect = document.getElementById('linerSelect');
+const linerFields = document.getElementById('linerFields');
+const casRemarksEl = document.getElementById('casRemarks');
+const includeRemarksEl = document.getElementById('includeRemarks');
+const casOutput = document.getElementById('casOutput');
+const remarksSection = document.querySelector('details.section[data-section="remarks"]');
+const vectorFinalToggleEl = document.getElementById('vectorFinalToggle');
+const vectorFinalFieldsEl = document.getElementById('vectorFinalFields');
+const vectorFinalDegEl = document.getElementById('vectorFinalDeg');
+const vectorFinalVarEl = document.getElementById('vectorFinalVar');
+const preauthToggleEl = document.getElementById('preauthToggle');
+const preauthRowEl = document.getElementById('preauthRow');
+const alliesInAreaToggleEl = document.getElementById('alliesInAreaToggle');
+const alliesInAreaLabelEl = document.getElementById('alliesInAreaLabel');
+const dangerCloseToggleEl = document.getElementById('dangerCloseToggle');
+const dangerCloseFieldsEl = document.getElementById('dangerCloseFields');
+const dangerCloseDegEl = document.getElementById('dangerCloseDeg');
+const dangerCloseDistEl = document.getElementById('dangerCloseDist');
+const dangerCloseRowEl = document.getElementById('dangerCloseRow');
+const dangerCloseLabelEl = document.getElementById('dangerCloseLabel');
+const missionPresentEls = [
+  document.getElementById('mission_present_0'),
+  document.getElementById('mission_present_1'),
+  document.getElementById('mission_present_2')
+];
+
+let airStore = [{},{},{}];
+let airPresent = [false,false,false];
+let currentAir = 0;
+let missionStore = [null,null,null];
+let missionPresent = [false,false,false];
+let currentMission = 0;
+let suppressSave = false;
+
+function loadState(){
+  try{
+    const s = localStorage.getItem('jtac_helper_state');
+    if(s){
+      const parsed = JSON.parse(s);
+      if(Array.isArray(parsed.airStore) && parsed.airStore.length>=3) {
+        airStore = parsed.airStore.map(a=>{
+          if(!a) return {};
+          if(a.l1||a.l2||a.l3) return a;
+          const migrated = {
+            l1: a.cs||'',
+            l2: a.type||'',
+            l3: a.pos||'',
+            l4: a.weap||'',
+            l5: a.time||'',
+            l6: a.abort||a.sens||'',
+            l7: a.remarks||a.fuel||''
+          };
+          return migrated;
+        });
+      }
+      if(typeof parsed.currentAir === 'number') currentAir = parsed.currentAir;
+      if(parsed.csJtac) csJtac.value = parsed.csJtac;
+      if(Array.isArray(parsed.airPresent)) airPresent = parsed.airPresent;
+      if(Array.isArray(parsed.missionStore)) missionStore = parsed.missionStore;
+      if(Array.isArray(parsed.missionPresent)) missionPresent = parsed.missionPresent;
+      if(typeof parsed.currentMission === 'number') currentMission = parsed.currentMission;
+      if(parsed.liner) linerSelect.value = parsed.liner;
+      if(typeof parsed.casModeRadio === 'boolean'){
+        const cm = document.getElementById('cas_mode_radio'); if(cm) cm.checked = parsed.casModeRadio;
+      }
+      if(parsed.castype){
+        document.querySelectorAll('input[name="castype"]').forEach(i=> i.checked = (i.value === parsed.castype));
+      }
+      if(parsed.attackmethod){
+        document.querySelectorAll('input[name="attackmethod"]').forEach(i=> i.checked = (i.value === parsed.attackmethod));
+      }
+      if(parsed.req_munition) document.getElementById('req_munition').value = parsed.req_munition;
+      if(parsed.casRemarks) casRemarksEl.value = parsed.casRemarks;
+      if(typeof parsed.includeRemarks === 'boolean') includeRemarksEl.checked = parsed.includeRemarks;
+      if(typeof parsed.vectorFinalEnabled === 'boolean') vectorFinalToggleEl.checked = parsed.vectorFinalEnabled;
+      if(typeof parsed.vectorFinalDeg !== 'undefined') vectorFinalDegEl.value = parsed.vectorFinalDeg;
+      if(typeof parsed.vectorFinalVar !== 'undefined') vectorFinalVarEl.value = parsed.vectorFinalVar;
+      updateRemarksVisibility();
+      if(parsed.openSections && typeof parsed.openSections === 'object'){
+        document.querySelectorAll('details.section[data-section]').forEach(d=>{
+          const k = d.getAttribute('data-section');
+          if(typeof parsed.openSections[k] === 'boolean') d.open = parsed.openSections[k];
+        });
+      }
+    }
+  }catch(e){console.warn('loadState error',e)}
+}
+
+function saveState(){
+  try{
+    const state = {
+      airStore,
+      airPresent,
+      currentAir,
+      missionStore,
+      missionPresent,
+      currentMission,
+      csJtac: csJtac.value,
+      liner: linerSelect?.value || '9',
+      castype: [...document.querySelectorAll('input[name="castype"]')].find(c=>c.checked)?.value || '',
+      attackmethod: [...document.querySelectorAll('input[name="attackmethod"]')].find(a=>a.checked)?.value || '',
+      req_munition: document.getElementById('req_munition')?.value || '',
+      casRemarks: casRemarksEl?.value || ''
+    };
+    state.casModeRadio = !!document.getElementById('cas_mode_radio')?.checked;
+    state.openSections = {};
+    document.querySelectorAll('details.section[data-section]').forEach(d=> state.openSections[d.getAttribute('data-section')] = !!d.open );
+    localStorage.setItem('jtac_helper_state', JSON.stringify(state));
+  }catch(e){console.warn('saveState error',e)}
+}
+
+function saveMission(){
+  const m = {
+    liner: linerSelect?.value || '9',
+    remarks: casRemarksEl?.value || '',
+    includeRemarks: includeRemarksEl?.checked || false,
+    preauth: preauthToggleEl?.checked || false,
+    alliesInArea: alliesInAreaToggleEl?.checked || false,
+    dangerClose: dangerCloseToggleEl?.checked || false,
+    dangerCloseDeg: dangerCloseDegEl?.value || '',
+    dangerCloseDist: dangerCloseDistEl?.value || '',
+    vectorFinalEnabled: vectorFinalToggleEl?.checked || false,
+    vectorFinalDeg: vectorFinalDegEl?.value || '',
+    vectorFinalVar: vectorFinalVarEl?.value || '',
+    castype: [...document.querySelectorAll('input[name="castype"]')].find(c=>c.checked)?.value || ''
+  };
+  const inputs = [...linerFields.querySelectorAll('input[data-line]')];
+  inputs.forEach(i=>{ if(!m.lines) m.lines = {}; m.lines[i.dataset.line] = i.value; });
+  missionStore[currentMission] = m;
+  saveState();
+}
+
+function loadMission(){
+  const m = missionStore[currentMission] || {};
+  if(m.liner) linerSelect.value = m.liner;
+  const inputs = [...linerFields.querySelectorAll('input[data-line]')];
+  inputs.forEach(i=> i.value = (m.lines && m.lines[i.dataset.line]) || '');
+  casRemarksEl.value = m.remarks || '';
+  if(includeRemarksEl) includeRemarksEl.checked = !!m.includeRemarks;
+  if(preauthToggleEl) preauthToggleEl.checked = !!m.preauth;
+  if(alliesInAreaToggleEl) alliesInAreaToggleEl.checked = !!m.alliesInArea;
+  updateAlliesInAreaColor();
+  if(dangerCloseToggleEl) dangerCloseToggleEl.checked = !!m.dangerClose;
+  if(dangerCloseDegEl) dangerCloseDegEl.value = m.dangerCloseDeg || '';
+  if(dangerCloseDistEl) dangerCloseDistEl.value = m.dangerCloseDist || '';
+  if(vectorFinalToggleEl) vectorFinalToggleEl.checked = !!m.vectorFinalEnabled;
+  if(vectorFinalDegEl) vectorFinalDegEl.value = m.vectorFinalDeg || '';
+  if(vectorFinalVarEl) vectorFinalVarEl.value = m.vectorFinalVar || '';
+  if(m.castype){
+    document.querySelectorAll('input[name="castype"]').forEach(i=> i.checked = (i.value === m.castype));
+  } else {
+    document.querySelectorAll('input[name="castype"]').forEach(i=> i.checked = false);
+  }
+  updateLiner();
+  updateCasTypeEffects();
+  updateRemarksVisibility();
+  updateVectorFinalVisibility();
+  updateDangerCloseVisibility();
+  updatePreauthVisibility();
+}
 
 function saveAir(){
-airStore[currentAir]={
-cs:air_cs.value,
-type:air_type.value,
-weap:air_weap.value,
-time:air_time.value,
-sens:air_sens.value,
-fuel:air_fuel.value
-};
+  airStore[currentAir] = {
+    l1: airL1.value,
+    l2: airL2.value,
+    l3: airL3.value,
+    l4: airL4.value,
+    l5: airL5.value,
+    l6: airL6.value,
+    l7: airL7.value
+  };
+  saveState();
 }
 
 function loadAir(){
-const a=airStore[currentAir];
-air_cs.value=a.cs||"";
-air_type.value=a.type||"";
-air_weap.value=a.weap||"";
-air_time.value=a.time||"";
-air_sens.value=a.sens||"";
-air_fuel.value=a.fuel||"";
+  const a = airStore[currentAir] || {};
+  airL1.value = a.l1 || '';
+  airL2.value = a.l2 || '';
+  airL3.value = a.l3 || '';
+  airL4.value = a.l4 || '';
+  airL5.value = a.l5 || '';
+  airL6.value = a.l6 || '';
+  airL7.value = a.l7 || '';
 }
 
 function switchAir(){
-saveAir();
-currentAir=parseInt(airSelect.value);
-loadAir();
+  saveAir();
+  loadAir();
+  saveState();
 }
 
 function updateLiner(){
-const l=linerSelect.value;
-document.querySelectorAll("#linerFields input").forEach(i=>{
-i.classList.remove("hidden");
-if(l==3&&i.dataset.line>3)i.classList.add("hidden");
-if(l==6&&i.dataset.line>6)i.classList.add("hidden");
-});
+  const l = parseInt(linerSelect.value,10) || 9;
+  linerFields.querySelectorAll('input').forEach(i=>{
+    i.classList.remove('hidden');
+    const line = parseInt(i.dataset.line,10);
+    if(!isNaN(line) && line>l) i.classList.add('hidden');
+  });
 }
+
+loadState();
 updateLiner();
+loadAir();
+updateRemarksVisibility();
+updateVectorFinalVisibility();
+updateDangerCloseVisibility();
+updateCasTypeEffects();
+updateAlliesInAreaColor();
+
+function applyOpenSectionsFromStorage(){
+  try{
+    const s = localStorage.getItem('jtac_helper_state');
+    if(!s) return;
+    const parsed = JSON.parse(s);
+    if(parsed && parsed.openSections && typeof parsed.openSections === 'object'){
+      suppressSave = true;
+      document.querySelectorAll('details.section[data-section]').forEach(d=>{
+        const k = d.getAttribute('data-section');
+        if(typeof parsed.openSections[k] === 'boolean') d.open = parsed.openSections[k];
+      });
+      suppressSave = false;
+    }
+  }catch(e){console.warn('applyOpenSectionsFromStorage',e)}
+}
+
+function updateRemarksVisibility(){
+  if(!remarksSection) return;
+  if(includeRemarksEl && includeRemarksEl.checked){
+    remarksSection.classList.remove('hidden');
+  } else {
+    remarksSection.classList.add('hidden');
+  }
+}
+
+function updateVectorFinalVisibility(){
+  if(!vectorFinalFieldsEl) return;
+  const show = !!(vectorFinalToggleEl && vectorFinalToggleEl.checked);
+  vectorFinalFieldsEl.classList.toggle('hidden', !show);
+}
+
+function updateDangerCloseVisibility(){
+  if(!dangerCloseFieldsEl) return;
+  const show = !!(dangerCloseToggleEl && dangerCloseToggleEl.checked);
+  dangerCloseFieldsEl.classList.toggle('hidden', !show);
+  dangerCloseRowEl?.classList.toggle('danger', show);
+  dangerCloseLabelEl?.classList.toggle('danger', show);
+}
+
+function updatePreauthVisibility(){
+  if(!preauthRowEl) return;
+  const selected = [...document.querySelectorAll('input[name="castype"]')].find(c=>c.checked)?.value || '';
+  const show = selected === 'Tipo 3';
+  preauthRowEl.classList.toggle('hidden', !show);
+  if(!show && preauthToggleEl) preauthToggleEl.checked = false;
+  if(!show && alliesInAreaToggleEl) alliesInAreaToggleEl.checked = false;
+  updateAlliesInAreaColor();
+}
+
+function updateAlliesInAreaColor(){
+  if(!alliesInAreaLabelEl) return;
+  const on = !!(alliesInAreaToggleEl && alliesInAreaToggleEl.checked);
+  alliesInAreaLabelEl.classList.toggle('ally-active', on);
+}
+
+function updateCasTypeEffects(){
+  const selected = [...document.querySelectorAll('input[name="castype"]')].find(c=>c.checked)?.value || '';
+  const opt3 = linerSelect?.querySelector('option[value="3"]');
+  const opt6 = linerSelect?.querySelector('option[value="6"]');
+  const opt9 = linerSelect?.querySelector('option[value="9"]');
+  const isTipo3 = selected === 'Tipo 3';
+  if(opt3) opt3.disabled = !isTipo3;
+  if(opt6) opt6.disabled = isTipo3;
+  if(opt9) opt9.disabled = isTipo3;
+  if(isTipo3){
+    linerSelect.value = '3';
+    updateLiner();
+  } else if(linerSelect?.value === '3'){
+    linerSelect.value = '9';
+    updateLiner();
+  }
+  updatePreauthVisibility();
+}
+
+airPresentEls.forEach((el,idx)=>{
+  if(!el) return;
+  el.checked = !!airPresent[idx];
+  el.addEventListener('change', ()=>{
+    if(suppressSave) return;
+    if(el.checked){
+      airPresentEls.forEach((o,j)=>{ if(j!==idx && o){ o.checked = false; airPresent[j]=false; }});
+      airPresent[idx]=true;
+      currentAir = idx;
+    } else {
+      el.checked = true;
+      airPresent[idx]=true;
+    }
+    loadAir();
+    saveState();
+  });
+});
+
+if(!airPresent.some(Boolean) && airPresentEls[0]){ airPresent[0]=true; airPresentEls[0].checked=true; currentAir=0; }
+
+missionPresentEls.forEach((el,idx)=>{
+  if(!el) return;
+  el.checked = !!missionPresent[idx];
+  el.addEventListener('change', ()=>{
+    if(suppressSave) return;
+    if(el.checked){
+      missionPresentEls.forEach((o,j)=>{ if(j!==idx && o){ o.checked = false; missionPresent[j]=false; }});
+      missionPresent[idx]=true;
+      currentMission = idx;
+    } else {
+      el.checked = true;
+      missionPresent[idx]=true;
+    }
+    loadMission();
+    saveState();
+  });
+});
+if(!missionPresent.some(Boolean) && missionPresentEls[0]){ missionPresent[0]=true; missionPresentEls[0].checked=true; currentMission=0; }
+if(missionStore[currentMission]) loadMission();
+['mission_clear_0','mission_clear_1','mission_clear_2'].forEach((id,idx)=>{
+  const b = document.getElementById(id);
+  if(!b) return;
+  b.addEventListener('click', (e)=>{
+    e.preventDefault();
+    missionStore[idx] = null;
+    if(currentMission===idx) loadMission();
+    saveState();
+  });
+});
+
+document.querySelectorAll('details.section[data-section]').forEach(d=> d.addEventListener('toggle', saveState));
+applyOpenSectionsFromStorage();
+window.addEventListener('beforeunload', saveState);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'hidden') saveState(); });
 
 document.querySelectorAll('input[name="castype"]').forEach(cb=>{
-cb.addEventListener("change",()=>{
-document.querySelectorAll('input[name="castype"]').forEach(o=>{
-if(o!==cb)o.checked=false;
+  cb.addEventListener('change',()=>{ document.querySelectorAll('input[name="castype"]').forEach(o=>{ if(o!==cb) o.checked=false; }); updateCasTypeEffects(); saveMission(); });
 });
+
+document.querySelectorAll('input[name="attackmethod"]').forEach(cb=>{
+  cb.addEventListener('change',()=>{ document.querySelectorAll('input[name="attackmethod"]').forEach(o=>{ if(o!==cb) o.checked=false; }); saveState(); });
 });
-});
+
+csJtac?.addEventListener('input', saveState);
+linerSelect?.addEventListener('change', ()=>{ updateLiner(); saveState(); });
+document.getElementById('req_munition')?.addEventListener('input', saveState);
+casRemarksEl?.addEventListener('input', saveMission);
+includeRemarksEl?.addEventListener('change', ()=>{ updateRemarksVisibility(); saveMission(); });
+dangerCloseToggleEl?.addEventListener('change', ()=>{ updateDangerCloseVisibility(); saveMission(); });
+dangerCloseDegEl?.addEventListener('input', saveMission);
+dangerCloseDistEl?.addEventListener('input', saveMission);
+preauthToggleEl?.addEventListener('change', saveMission);
+alliesInAreaToggleEl?.addEventListener('change', ()=>{ updateAlliesInAreaColor(); saveMission(); });
+vectorFinalToggleEl?.addEventListener('change', ()=>{ updateVectorFinalVisibility(); saveMission(); });
+vectorFinalDegEl?.addEventListener('input', saveMission);
+vectorFinalVarEl?.addEventListener('input', saveMission);
+
+[airL1,airL2,airL3,airL4,airL5,airL6,airL7].forEach(el=>{ if(el) el.addEventListener('input', saveAir); });
+[...linerFields.querySelectorAll('input[data-line]')].forEach(i=> i.addEventListener('input', saveMission));
+
+const casModeRadio = document.getElementById('cas_mode_radio');
+const casGenBtn = document.getElementById('cas_gen');
+if(casGenBtn){
+  casGenBtn.addEventListener('click', ()=>{
+    const mode = casModeRadio && casModeRadio.checked ? 'radio' : 'texto';
+    genCAS(mode);
+  });
+  if(casModeRadio) casModeRadio.addEventListener('change', saveState);
+}
 
 function genCAS(mode){
-saveAir();
-const jtac=cs_jtac.value||"JTAC";
-const liner=linerSelect.value;
-const castype=[...document.querySelectorAll('input[name="castype"]')]
-.find(c=>c.checked)?.value || "CAS";
-const activeAir = airStore[currentAir];
-const fields=[...document.querySelectorAll("#linerFields input")]
-.filter(i=>!i.classList.contains("hidden")&&i.value&&i.id!=="casRemarks");
-const remarks=document.getElementById("casRemarks").value;
-let out="";
+  saveAir();
+  const jtac = (csJtac.value || '').trim() || 'JTAC';
+  const liner = parseInt(linerSelect.value,10) || 9;
+  const control = [...document.querySelectorAll('input[name="castype"]')].find(c=>c.checked)?.value || '';
+  const attack = [...document.querySelectorAll('input[name="attackmethod"]')].find(a=>a.checked)?.value || '';
+  const munition = (document.getElementById('req_munition')?.value || '').trim();
+  const castype = control || 'CAS';
+  const activeAir = airStore[currentAir] || {};
+  const fields = [...linerFields.querySelectorAll('input[data-line]')].filter(i=>!i.classList.contains('hidden') && i.value.trim() !== '');
+  const remarks = (casRemarksEl?.value || '').trim();
+  let out = '';
+  const formatLine6 = (val) => {
+    const digits = (val || '').replace(/\D/g,'');
+    if(!(digits.length === 6 || digits.length === 8 || digits.length === 10)) return val;
+    const half = digits.length / 2;
+    const first = digits.slice(0, half);
+    const last = digits.slice(-half);
+    return `[ X${first} | Y${last} ]`;
+  };
+  const toCompass = (deg) => {
+    if(isNaN(deg)) return '';
+    const dirs = ['N','NE','E','SE','S','SW','W','NW','N'];
+    const idx = Math.round(((deg % 360) / 45));
+    return dirs[idx];
+  };
+  const padLeadingZero = (rawVal) => {
+    if(rawVal === null || rawVal === undefined) return '';
+    const raw = String(rawVal).trim();
+    if(raw === '') return '';
+    if(raw.startsWith('0')) return raw;
+    const num = Number(raw);
+    if(Number.isNaN(num)) return raw;
+    return num < 99 ? `0${raw}` : raw;
+  };
+  const formatHeading = (val) => {
+    if(val === null || val === undefined) return '';
+    const raw = String(val).trim();
+    if(raw === '') return '';
+    const num = Number(raw);
+    if(Number.isNaN(num)) return val;
+    const shown = padLeadingZero(raw);
+    const dir = toCompass(num);
+    return `rumbo ${dir} ${shown}°`;
+  };
+  const formatDistance = (val) => {
+    if(val === null || val === undefined) return '';
+    const raw = String(val).trim();
+    if(raw === '') return '';
+    const num = Number(raw);
+    if(Number.isNaN(num)) return val;
+    if(num >= 1000){
+      const km = num / 1000;
+      return `distancia ${km} km`;
+    }
+    return `distancia ${raw} metros`;
+  };
+  const formatVectorFinal = () => {
+    if(!vectorFinalToggleEl?.checked) return '';
+    const degVal = (vectorFinalDegEl?.value || '').trim();
+    const degRaw = parseFloat(degVal);
+    if(isNaN(degRaw)) return '';
+    const dir = toCompass(degRaw);
+    const shownDeg = padLeadingZero(degVal);
+    const varVal = (vectorFinalVarEl?.value || '').trim();
+    const varRaw = parseFloat(varVal);
+    const shownVar = padLeadingZero(varVal);
+    const varPart = !isNaN(varRaw) ? ` \u00B1 ${shownVar}\u00B0` : '';
+    return `vector final de ataque ${dir} ${shownDeg}\u00B0${varPart}`.trim();
+  };
+  const formatDangerClose = () => {
+    if(!dangerCloseToggleEl?.checked) return '';
+    const degVal = (dangerCloseDegEl?.value || '').trim();
+    const distVal = (dangerCloseDistEl?.value || '').trim();
+    const parts = [];
+    const degRaw = parseFloat(degVal);
+    if(!isNaN(degRaw)){
+      const dir = toCompass(degRaw);
+      const shownDeg = padLeadingZero(degVal);
+      parts.push(`aliados direccion ${dir} ${shownDeg}\u00B0`);
+    }
+    const distRaw = parseFloat(distVal);
+    if(!isNaN(distRaw)){
+      parts.push(`distancia ${distVal} metros`);
+    }
+    const content = `DANGER CLOSE${parts.length ? `, ${parts.join(', ')}` : ''}`;
+    return `<span class="danger">${content}</span>`;
+  };
+  const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const replaceInTextNodes = (html, re, replacement) => {
+    return html.split(/(<[^>]+>)/g).map((part, i) => {
+      if(i % 2) return part;
+      return part.replace(re, replacement);
+    }).join('');
+  };
+  const colorizeCallsigns = (html, jtacCall, airCall) => {
+    let outHtml = html;
+    const protectedSpans = [];
+    outHtml = outHtml.replace(/<span class="(?:jtac|air)">.*?<\/span>/g, (m)=>{
+      protectedSpans.push(m);
+      return `__PROT${protectedSpans.length-1}__`;
+    });
+    if(jtacCall){
+      const re = new RegExp(escapeRegExp(jtacCall), 'g');
+      outHtml = replaceInTextNodes(outHtml, re, `<span class="jtac">${jtacCall}</span>`);
+    }
+    if(airCall){
+      const re = new RegExp(escapeRegExp(airCall), 'g');
+      outHtml = replaceInTextNodes(outHtml, re, `<span class="air">${airCall}</span>`);
+    }
+    outHtml = outHtml.replace(/__PROT(\d+)__/g, (_, idx)=> protectedSpans[Number(idx)] || '');
+    return outHtml;
+  };
 
-if(mode==="radio"){
-out+=`<span class="jtac">${jtac}</span>: ${castype}, check-in recibido.<br>`;
-if(activeAir.cs){
-out+=`<span class="air">${activeAir.cs}</span>: ${activeAir.type}, ${activeAir.weap}, playtime ${activeAir.time}, sensors ${activeAir.sens}.<br>`;
-}
-out+=`<span class="jtac">${jtac}</span>: ${liner}-line, listo para copiar.<br>`;
-fields.forEach(f=>out+=`${f.value}, `);
-if(dangerClose.checked)out+=`<span class="danger">DANGER CLOSE</span>, `;
-if(remarks)out+=`remarks ${remarks}, `;
-out+=`how copy?`;
-}else{
-out+=`<span class="jtac">JTAC:</span> ${jtac}<br>`;
-out+=`${castype}<br><br>`;
-if(activeAir.cs){
-out+=`<span class="air">${activeAir.cs}</span>: ${activeAir.type}, ${activeAir.weap}, playtime ${activeAir.time}, sensors ${activeAir.sens}.<br>`;
-}
-out+=`CAS ${liner}-LINE<br>`;
-fields.forEach(f=>out+=`- ${f.value}<br>`);
-if(dangerClose.checked)out+=`<span class="danger">⚠ DANGER CLOSE</span>`;
-}
+  if(mode === 'radio'){
+    const a = activeAir;
+    const chkParts = [];
+    if(a.l2) chkParts.push(a.l2);
+    if(a.l4) chkParts.push(a.l4);
+    if(a.l5) chkParts.push(`playtime ${a.l5}`);
+    if(a.l6) chkParts.push(`código aborto ${a.l6}`);
+    if(a.l1) {
+      out += `<span class="air">${a.l1}</span>:`;
+      if(chkParts.length) out += ` ${chkParts.join(', ')}`;
+      out += `.<br>`;
+      if(a.l7) out += `Remarks: ${a.l7}.<br>`;
+    }
+    out += `<span class="jtac">${jtac}</span>: check-in recibido, mantenga posición y espere instrucciones, fuera.<br><br>`;
 
-casOutput.innerHTML=out;
-}
-function genARTY(mode){
-  const obs = cs_jtac.value || "JTAC";
-  const type = arty_type.value;
-  const tgt = arty_target.value;
-  const desc = arty_desc.value;
-  const method = arty_method.value;
-  const ammo = arty_ammo.value;
-  const dc = arty_danger.checked;
-  let out = "";
+    out += `<span class="jtac">${jtac}</span>: ${a.l1 || 'Aeronave'}, ${jtac}, avise para gameplan.<br>`;
+    out += `<span class="air">${a.l1 || 'Aeronave'}</span>: ${a.l1 || 'Aeronave'}, copiado, listo para gameplan.<br><br>`;
 
-  if(mode==="radio"){
-    out+=`<span class="jtac">${obs}</span>: Call for Fire, ${type}.<br>`;
-    out+=`${method}, target ${tgt}. ${desc}.<br>`;
-    if(ammo) out+=`Request ${ammo}.<br>`;
-    if(dc) out+=`<span class="danger">DANGER CLOSE</span>.<br>`;
-    out+=`Over.`;
-  } else {
-    out+=`<span class="jtac">Observer:</span> ${obs}<br>`;
-    out+=`Mission: ${type}<br><br>`;
-    out+=`Target Location: ${tgt}<br>`;
-    out+=`Method: ${method}<br>`;
-    out+=`Description: ${desc}<br>`;
-    if(ammo) out+=`Requested Effects: ${ammo}<br>`;
-    if(dc) out+=`<br><span class="danger">⚠ DANGER CLOSE</span>`;
+    const gpParts = [];
+    if(control) gpParts.push(`control tipo ${control}`);
+    if(attack) gpParts.push(attack === 'BOT' ? 'Bomb on Target' : attack === 'BOC' ? 'Bomb on Coordinate' : attack);
+    if(munition) gpParts.push(munition);
+    out += `<span class="jtac">${jtac}</span>: ${a.l1 || 'Aeronave'}, ${jtac}, gameplan` + (gpParts.length ? `, ${gpParts.join(', ')}` : '') + `. Avise para ${liner}-line.<br><br>`;
+
+    out += `<span class="air">${a.l1 || 'Aeronave'}</span>: ${a.l1 || 'Aeronave'}, listo para ${liner}-line.<br><br>`;
+
+    const map = {};
+    fields.forEach(i=> map[i.dataset.line] = i.value);
+    const lineParts = [];
+    if(map[1]) lineParts.push(map[1]);
+    if(map[2]) lineParts.push(formatHeading(map[2]));
+    if(map[3]) lineParts.push(formatDistance(map[3]));
+    if(map[4]) lineParts.push(`elevación ${map[4]}`);
+    if(map[5]) lineParts.push(map[5]);
+    if(map[6]) lineParts.push(`coordenadas ${formatLine6(map[6])}`);
+    if(map[7]) lineParts.push(`marcado con ${map[7]}`);
+    if(map[8]) lineParts.push(`aliados ${map[8]}`);
+    if(map[9]) lineParts.push(`egreso ${map[9]}`);
+    const vec = formatVectorFinal();
+    const preauth = preauthToggleEl?.checked ? 'Ataque preautorizado' : '';
+    const allies = alliesInAreaToggleEl?.checked ? '<span class="ally-text">aliados operando en el area</span>' : '';
+    const danger = formatDangerClose();
+    if(includeRemarksEl?.checked && (preauth || allies || danger || vec || remarks)) lineParts.push('remarks');
+    if(includeRemarksEl?.checked && preauth) lineParts.push(preauth);
+    if(includeRemarksEl?.checked && allies) lineParts.push(allies);
+    if(includeRemarksEl?.checked && danger) lineParts.push(danger);
+    if(includeRemarksEl?.checked && vec) lineParts.push(vec);
+    if(includeRemarksEl?.checked && remarks) lineParts.push(`remarks ${remarks}`);
+    out += `<span class="jtac">${jtac}</span>: ${liner}-line` + (lineParts.length ? `, ${lineParts.join(', ')}` : '') + `, confirme?`;
+  }else{
+    out += `<span class="jtac">JTAC:</span> ${jtac}<br><br>`;
+//    out += `${castype}<br><br>`;
+    if(activeAir.l1){
+      const airParts = [];
+      if(activeAir.l2) airParts.push(activeAir.l2);
+      if(activeAir.l4) airParts.push(activeAir.l4);
+      if(activeAir.l5) airParts.push(`playtime ${activeAir.l5}`);
+      if(activeAir.l6) airParts.push(`abort ${activeAir.l6}`);
+      out += `<span class="air">${activeAir.l1}</span>: ${airParts.join(', ')}.<br>`;
+      if(activeAir.l7) out += `Remarks: ${activeAir.l7}.<br>`;
+    }
+    if(control || attack || munition){
+      out += `<b>GAMEPLAN</b><br>`;
+      if(control) out += `Tipo de control: ${control}<br>`;
+      if(attack === 'BOT') out += `Metodo de ataque: Bomb on Target<br>`;
+      if(attack === 'BOC') out += `Metodo de ataque: Bomb on Coordinate<br>`;
+      if(munition) out += `Municion solicitada: ${munition}<br>`;
+      out += `<br>`;
+    }
+    out += `CAS ${liner}-LINE<br>`;
+    fields.forEach(f => {
+      let v = f.value;
+      if(f.dataset.line === '6') v = formatLine6(f.value);
+      if(f.dataset.line === '2') v = formatHeading(f.value);
+      if(f.dataset.line === '3') v = formatDistance(f.value);
+      out += `- ${v}<br>`;
+    });
+    if(includeRemarksEl?.checked && (remarks || formatVectorFinal() || preauthToggleEl?.checked || alliesInAreaToggleEl?.checked || formatDangerClose())){
+      const vec = formatVectorFinal();
+      const danger = formatDangerClose();
+      out += `<br><b>Remarks</b><br>`;
+      if(preauthToggleEl?.checked) out += `Ataque preautorizado<br>`;
+      if(alliesInAreaToggleEl?.checked) out += `<span class="ally-text">aliados operando en el area</span><br>`;
+      if(danger) out += `${danger}<br>`;
+      if(vec) out += `${vec}<br>`;
+      if(remarks) out += `${remarks}<br>`;
+    }
   }
 
-  artyOutput.innerHTML = out;
+  out = colorizeCallsigns(out, jtac, activeAir.l1 || '');
+  casOutput.innerHTML = out;
+  saveState();
+}
+
+function clearAll(){
+  suppressSave = true;
+  airStore = [{},{},{}];
+  currentAir = 0;
+  airPresent = [false,false,false];
+  airPresentEls.forEach(el=>{ if(el) el.checked = false; });
+  missionStore = [null,null,null];
+  missionPresent = [false,false,false];
+  currentMission = 0;
+  missionPresentEls.forEach(el=>{ if(el) el.checked = false; });
+  csJtac.value = '';
+  linerSelect.value = '9';
+  updateLiner();
+  [airL1,airL2,airL3,airL4,airL5,airL6,airL7].forEach(i=>{ if(i) i.value=''; });
+  document.querySelectorAll('input[name="castype"]').forEach(i=> i.checked=false);
+  document.querySelectorAll('input[name="attackmethod"]').forEach(i=> i.checked=false);
+  const req = document.getElementById('req_munition'); if(req) req.value = '';
+  casRemarksEl.value = '';
+  if(includeRemarksEl) includeRemarksEl.checked = false;
+  if(preauthToggleEl) preauthToggleEl.checked = false;
+  if(alliesInAreaToggleEl) alliesInAreaToggleEl.checked = false;
+  updateAlliesInAreaColor();
+  if(dangerCloseToggleEl) dangerCloseToggleEl.checked = false;
+  if(dangerCloseDegEl) dangerCloseDegEl.value = '';
+  if(dangerCloseDistEl) dangerCloseDistEl.value = '';
+  if(vectorFinalToggleEl) vectorFinalToggleEl.checked = false;
+  if(vectorFinalDegEl) vectorFinalDegEl.value = '';
+  if(vectorFinalVarEl) vectorFinalVarEl.value = '';
+  updateRemarksVisibility();
+  updateVectorFinalVisibility();
+  updateDangerCloseVisibility();
+  updatePreauthVisibility();
+  saveState();
+  [...linerFields.querySelectorAll('input[data-line]')].forEach(i=> i.value='');
+  casOutput.innerHTML = '';
+  suppressSave = false;
 }
 
 </script>
 
 </body>
 </html>
+
