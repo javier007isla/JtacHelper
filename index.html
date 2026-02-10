@@ -305,9 +305,9 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
 <div class="section-content">
 <h3 data-i18n="gameplan.control_type">Tipo de Control</h3>
 <div class="grid">
-  <label><input type="checkbox" id="castype-1" name="castype" value="Tipo 1"> <span data-i18n="gameplan.cas_type_1">CAS Tipo 1</span></label>
-  <label><input type="checkbox" id="castype-2" name="castype" value="Tipo 2"> <span data-i18n="gameplan.cas_type_2">CAS Tipo 2</span></label>
-  <label><input type="checkbox" id="castype-3" name="castype" value="Tipo 3"> <span data-i18n="gameplan.cas_type_3">CAS Tipo 3</span></label>
+  <label><input type="checkbox" id="castype-1" name="castype" value="Tipo 1"> <span data-i18n="gameplan.cas_type_1">Tipo 1</span></label>
+  <label><input type="checkbox" id="castype-2" name="castype" value="Tipo 2"> <span data-i18n="gameplan.cas_type_2">Tipo 2</span></label>
+  <label><input type="checkbox" id="castype-3" name="castype" value="Tipo 3"> <span data-i18n="gameplan.cas_type_3">Tipo 3</span></label>
 </div>
 <div id="attack-method-block">
 <h3 data-i18n="gameplan.attack_method">Método de Ataque</h3>
@@ -1843,7 +1843,11 @@ function genCAS(mode){
     const gpParts = [];
     if(control){
       const ctlLabel = control === 'Tipo 1' ? t('gameplan.cas_type_1') : control === 'Tipo 2' ? t('gameplan.cas_type_2') : control === 'Tipo 3' ? t('gameplan.cas_type_3') : control;
-      gpParts.push(`${t('radio.control')} ${ctlLabel}`);
+      if(currentLang === 'en'){
+        gpParts.push(`${ctlLabel} ${t('radio.control')}`.trim());
+      } else {
+        gpParts.push(`${t('radio.control')} ${ctlLabel}`.trim());
+      }
     }
     if(attack) gpParts.push(attack === 'BOT' ? t('gameplan.bot') : attack === 'BOC' ? t('gameplan.boc') : attack);
     if(munition) gpParts.push(munition);
