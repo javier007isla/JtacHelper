@@ -27,11 +27,15 @@
 body{margin:0;font-family:Consolas,monospace;background:var(--bg);color:var(--text);line-height:1.4;padding-top:var(--header-h)}
 header{position:fixed;top:0;left:0;right:0;height:var(--header-h);display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:2px solid var(--accent);background:linear-gradient(180deg,#0d130f,#0b0f0c);z-index:1000}
 header h1{margin:0;font-size:1.25rem;font-weight:600}
+.app-brand{display:flex;flex-direction:column;gap:1px}
+.app-title{margin:0;font-size:1.08rem;font-weight:700;line-height:1.05}
+.app-meta{margin:0;font-size:.66rem;color:#9fb59f;line-height:1.1}
 .container{max-width:1100px;margin:auto;padding:12px}
 .section{background:var(--panel);border:1px solid #1e2a22;border-radius:6px;margin-bottom:12px;overflow:hidden}
 .section summary{cursor:pointer;padding:10px 12px;font-weight:bold;color:var(--accent);background:#0e1411}
 .section-content{padding:12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.grid.two-col-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}
 input,select,textarea{width:100%;background:#0c110d;border:1px solid #2a3a30;color:var(--text);padding:7px 8px;border-radius:4px;font-family:inherit;font-size:.85rem}
 .mun-qty{
   width:64px;
@@ -55,6 +59,7 @@ input[type="number"]{-moz-appearance:textfield}
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 button{background:var(--accent);border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:4px;font-weight:600;cursor:pointer;color:var(--text)}
+.danger-btn{background:var(--danger);border-color:rgba(255,255,255,0.08)}
 .output{background:#070a08;border:1px dashed #2a3a30;padding:10px;white-space:pre-wrap;font-size:.8rem;margin-top:8px;border-radius:4px;overflow:clip}
 .hidden{display:none !important}
 .jtac{color:var(--jtac);font-weight:bold}
@@ -99,6 +104,35 @@ button{background:var(--accent);border:1px solid rgba(255,255,255,0.06);padding:
 }
 .small-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:4px 8px;border-radius:4px;font-size:.8rem;cursor:pointer;margin-left:auto}
 .menu-btn{background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:6px 10px;border-radius:6px;cursor:pointer}
+.timer-box{margin-left:auto;min-width:88px;text-align:right;font-weight:700;font-size:1.2rem;color:var(--text)}
+.timer-box.running{color:var(--danger)}
+.timer-box.warning{animation:timerBlink .8s steps(2,end) infinite}
+.timer-box.warning.fast{animation:timerBlink .55s steps(2,end) infinite}
+.timer-box.warning.urgent{animation:timerBlink .35s steps(2,end) infinite}
+.danger-btn.holding{box-shadow:0 0 0 2px rgba(176,68,68,0.35) inset}
+.danger-btn.holding{position:relative;overflow:hidden}
+.danger-btn.holding::after{
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:0%;
+  background:linear-gradient(90deg, rgba(92,164,84,0.2), rgba(92,164,84,0.6));
+  animation:authorizeHoldFill 0.7s linear forwards;
+  pointer-events:none;
+}
+.danger-btn.holding::after{
+  border-radius:4px;
+}
+.danger-btn.running{animation:none}
+@keyframes authorizeHoldFill{
+  from{width:0%;}
+  to{width:100%;}
+}
+@keyframes timerBlink{
+  0%{opacity:1}
+  50%{opacity:.35}
+  100%{opacity:1}
+}
 .back-btn{display:inline-flex;padding:4px 8px;min-width:0;width:auto}
 .submenu-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .left-panel{position:fixed;top:var(--header-h);left:0;width:var(--left-panel-w);max-width:80vw;height:calc(100vh - var(--header-h));background:#0b0f0c;border-right:1px solid #1e2a22;transform:translateX(-100%);transition:transform .2s ease;z-index:999;padding:12px;box-sizing:border-box;overflow:auto;display:flex;flex-direction:column}
@@ -109,15 +143,22 @@ button{background:var(--accent);border:1px solid rgba(255,255,255,0.06);padding:
 .menu-btn-box{display:flex;align-items:center;justify-content:center;padding:10px 12px;border:1px solid #2a3a30;border-radius:4px;background:#0c110d;color:var(--text);cursor:pointer;font-weight:600;text-align:center}
 .submenu-panel{position:fixed;top:var(--header-h);left:0;width:var(--left-panel-w);max-width:80vw;height:calc(100vh - var(--header-h));background:#0b0f0c;border-right:1px solid #1e2a22;transform:translateX(-100%);transition:transform .2s ease;z-index:1001;padding:12px;box-sizing:border-box;overflow:auto}
 .submenu-panel#submenu-1{overflow:hidden;display:flex;flex-direction:column}
+.submenu-panel#submenu-3{display:flex;flex-direction:column}
+.submenu-panel#submenu-3 .settings-grid{margin-top:8px}
+.submenu-panel#submenu-3 .settings-footer{margin-top:auto;padding-top:10px}
 .submenu-panel.open{transform:translateX(0)}
 .submenu-panel.credits-panel{display:flex;flex-direction:column}
-.submenu-panel .small.credits-footer{margin-top:auto;color:#242c24 !important}
+.submenu-panel .small.credits-footer{margin-top:auto;color:#3e4b3e !important}
 .dict-item{padding:6px 0;white-space:normal;overflow-wrap:anywhere}
 .dict-item + .dict-item{border-top:1px solid #2f3f35}
 .dict-wrap{position:relative;flex:1;min-height:0}
 .dict-list{display:flex;flex-direction:column;gap:4px;padding-bottom:36px;max-height:calc(100% - 36px);overflow:hidden}
 .submenu-panel .dict-nav{position:absolute;left:0;right:0;bottom:0;display:flex;gap:8px;justify-content:space-between}
 .submenu-panel .dict-btn{background:#0c110d;border:1px solid #2a3a30;color:var(--text);padding:6px 10px;border-radius:4px;cursor:pointer}
+.armaments-table{width:100%;border-collapse:collapse;background:#0c110d;border:1px solid #2a3a30;border-radius:4px;overflow:hidden}
+.armaments-table th,.armaments-table td{padding:7px 8px;border-bottom:1px solid #1e2a22;text-align:left;font-size:.82rem}
+.armaments-table th{color:var(--accent);background:#0e1411}
+.armaments-table tr:last-child td{border-bottom:none}
 .left-panel,.submenu-panel{max-height:calc(100vh - var(--header-h))}
 @supports (height: 100dvh){
   .left-panel,.submenu-panel{height:calc(100dvh - var(--header-h));max-height:calc(100dvh - var(--header-h))}
@@ -221,6 +262,7 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
     width:100%;
     max-width:100%;
   }
+  .grid.two-col-buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
   .vector-fields .pm{
     flex:0 0 auto;
     padding:0;
@@ -250,7 +292,10 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
 <header>
   <div style="display:flex;align-items:center;gap:10px">
     <button class="menu-btn" id="menu-btn">&#9776;</button>
-<h1 data-i18n="app.title">JTAC Tactical Helper</h1>
+    <div class="app-brand">
+      <h1 class="app-title" data-i18n="app.title">JTAC Tactical Helper</h1>
+      <p class="app-meta"><span data-i18n="app.subtitle">CAS Tactical Assistant</span><span data-i18n="app.version">Beta v1.0.0</span></p>
+    </div>
   </div>
   <button id="clear-btn" data-i18n="action.clear_all">Limpiar todo</button>
 </header>
@@ -377,6 +422,12 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
         <input id="vector-final-var" type="number" inputmode="numeric" placeholder="Grados" data-i18n-placeholder="remarks.deg">
       </span>
     </label>
+    <label class="row-box mun-label vector-inline">
+      <input type="checkbox" id="extra-minutes-toggle"><span data-i18n="remarks.minutes">Minutos</span>
+      <span class="vector-fields hidden" id="extra-minutes-fields">
+        <input id="extra-minutes-input" type="text" inputmode="numeric" placeholder="Minutos" data-i18n-placeholder="remarks.minutes_placeholder">
+      </span>
+    </label>
   </div>
   <textarea id="cas-remarks" placeholder="Remarks" rows="4" style="margin-top:8px" data-i18n-placeholder="remarks.remarks_placeholder"></textarea>
 </div>
@@ -394,6 +445,8 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
         <span class="knob"></span>
       </label>
       <button id="cas-gen" data-i18n="action.generate">Generar</button>
+      <button id="cas-authorize" class="danger-btn hidden" data-i18n="action.authorize">Autorizar</button>
+      <div id="time-limit-display" class="timer-box hidden">00:00</div>
     </div>
     <div id="cas-output" class="output" tabindex="0"></div>
   </div>
@@ -405,6 +458,7 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
   <div class="menu-buttons">
     <button class="menu-btn-box" data-submenu="submenu-1" data-i18n="menu.terminology">Terminologia</button>
     <button class="menu-btn-box" data-submenu="submenu-2" data-i18n="menu.import_export">Importar / Exportar</button>
+    <button class="menu-btn-box" data-submenu="submenu-5" data-i18n="menu.armaments">Armamentos</button>
     <button class="menu-btn-box" data-submenu="submenu-3" data-i18n="menu.settings">Configuraciones</button>
     <button class="menu-btn-box credits-btn" data-submenu="submenu-4" data-i18n="menu.credits">Créditos</button>
   </div>
@@ -430,13 +484,35 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
     <h4 data-i18n="submenu.import_export.title">Importar / Exportar</h4>
   </div>
   <p class="small" data-i18n="submenu.import_export.desc">Copia y pega el estado del proyecto para respaldo o traslado.</p>
-  <div class="grid" style="margin-top:8px">
+  <div class="grid settings-grid">
     <textarea id="import-export-text" rows="6" placeholder="Pega aquí el texto para importar o usa Exportar" data-i18n-placeholder="submenu.import_export.placeholder"></textarea>
   </div>
-  <div class="grid" style="margin-top:8px">
+  <div class="grid two-col-buttons" style="margin-top:8px">
     <button class="menu-btn-box" id="export-btn" data-i18n="action.export">Exportar</button>
     <button class="menu-btn-box" id="import-btn" data-i18n="action.import">Importar</button>
   </div>
+  <div class="grid two-col-buttons" style="margin-top:8px">
+    <button class="menu-btn-box" id="export-armaments-btn" data-i18n="action.export_armaments">Exportar armamentos</button>
+    <button class="menu-btn-box" id="import-armaments-btn" data-i18n="action.import_armaments">Importar armamentos</button>
+  </div>
+</div>
+<div class="submenu-panel" id="submenu-5">
+  <div class="submenu-header">
+    <button class="menu-btn back-btn" data-back="submenu-5">◀</button>
+    <h4 data-i18n="submenu.armaments.title">Armamentos</h4>
+  </div>
+  <p class="small" data-i18n="submenu.armaments.desc">Carga armamentos comunes con su distancia sugerida de danger close.</p>
+  <p class="small" style="margin-top:10px" data-i18n="submenu.armaments.common_title">Armamentos comunes (Danger Close)</p>
+  <table class="armaments-table" style="margin-top:6px">
+    <thead>
+      <tr>
+        <th data-i18n="submenu.armaments.table.weapon">Armamento</th>
+        <th data-i18n="submenu.armaments.table.type">Tipo</th>
+        <th data-i18n="submenu.armaments.table.danger_close">Danger close</th>
+      </tr>
+    </thead>
+    <tbody id="common-armaments-body"></tbody>
+  </table>
 </div>
 <div class="submenu-panel" id="submenu-3">
   <div class="submenu-header">
@@ -458,6 +534,13 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
         <option value="ft" data-i18n="settings.units.ft">Pies</option>
       </select>
     </label>
+    <label class="row-box" style="width:100%;justify-content:space-between">
+      <span data-i18n="settings.extra_info">Info adicional</span>
+      <input type="checkbox" id="extra-info-toggle">
+    </label>
+  </div>
+  <div class="settings-footer">
+    <button class="menu-btn-box danger-btn" id="settings-reset-btn" data-i18n="settings.reset_defaults">Restaurar configuraciones predeterminadas</button>
   </div>
 </div>
 <div class="submenu-panel credits-panel" id="submenu-4">
@@ -465,10 +548,10 @@ h3{margin:8px 0;font-size:1rem;color:#b2c3b2}
     <button class="menu-btn back-btn" data-back="submenu-4">◀</button>
     <h4 data-i18n="credits.title">Créditos</h4>
   </div>
-  <img src="img/credits.png" alt="Créditos" style="width:33%;max-width:220px;display:block;margin:8px auto;border-radius:6px;">
+  <img id="credits-image" src="img/creditos/1.png" alt="Créditos" style="width:33%;max-width:220px;display:block;margin:8px auto;border-radius:6px;">
   <p style="text-align:center" data-i18n="credits.line1">Para Jtacs y futuros Jtacs.</p>
   <p style="text-align:center" data-i18n="credits.line2">Hecho con mucho amor y aun mucha mas IA por Javiito_CL.</p>
-  <p class="small credits-footer" style="text-align:center" data-i18n="credits.line3">Exxo para de ponerme los cuernos hdp</p>
+  <p id="credits-subtext" class="small credits-footer" style="text-align:center"></p>
 </div>
 
 
@@ -502,6 +585,9 @@ const vectorFinalToggleEl = document.getElementById('vector-final-toggle');
 const vectorFinalFieldsEl = document.getElementById('vector-final-fields');
 const vectorFinalDegEl = document.getElementById('vector-final-deg');
 const vectorFinalVarEl = document.getElementById('vector-final-var');
+const extraMinutesToggleEl = document.getElementById('extra-minutes-toggle');
+const extraMinutesFieldsEl = document.getElementById('extra-minutes-fields');
+const extraMinutesInputEl = document.getElementById('extra-minutes-input');
 const preauthToggleEl = document.getElementById('preauth-toggle');
 const preauthRowEl = document.getElementById('preauth-row');
 const preauthLabelEl = document.getElementById('preauth-label');
@@ -521,6 +607,9 @@ const dangerCloseRowEl = document.getElementById('danger-close-row');
 const importExportTextEl = document.getElementById('import-export-text');
 const exportBtnEl = document.getElementById('export-btn');
 const importBtnEl = document.getElementById('import-btn');
+const exportArmamentsBtnEl = document.getElementById('export-armaments-btn');
+const importArmamentsBtnEl = document.getElementById('import-armaments-btn');
+const commonArmamentsBodyEl = document.getElementById('common-armaments-body');
 const missionPresentEls = [
   document.getElementById('mission-present-0'),
   document.getElementById('mission-present-1'),
@@ -528,22 +617,51 @@ const missionPresentEls = [
 ];
 const casModeRadioEl = document.getElementById('cas-mode-radio');
 const casGenBtn = document.getElementById('cas-gen');
+const casAuthorizeBtn = document.getElementById('cas-authorize');
+const timeLimitDisplayEl = document.getElementById('time-limit-display');
 const reqMunitionListEl = document.getElementById('req-munition-list');
 const castypeEls = [...document.querySelectorAll('input[name="castype"]')];
 const attackMethodEls = [...document.querySelectorAll('input[name="attackmethod"]')];
 let pendingMunitionSelection = null;
+const DEFAULT_COMMON_ARMAMENTS_CSV = [
+  'name,type,dangerCloseM',
+  'GBU-12,Bomba guiada,260',
+  'GBU-38,Bomba guiada,310',
+  'APKWS,Cohete guiado,150',
+  'Rockets HE,Cohete HE,300',
+  'Gun Run,Canon,95',
+  'AGM-65,Misil,275'
+].join('\n');
+const ARMAMENTS_CSV_STORAGE_KEY = 'jtac_armaments_csv';
+let commonArmamentsCsv = DEFAULT_COMMON_ARMAMENTS_CSV;
 const langSelectEl = document.getElementById('lang-select');
 const unitSelectEl = document.getElementById('unit-select');
 const dictListEl = document.getElementById('dict-list');
 const dictPrevEl = document.getElementById('dict-prev');
 const dictNextEl = document.getElementById('dict-next');
 const dictPageIndicatorEl = document.getElementById('dict-page-indicator');
+const extraInfoToggleEl = document.getElementById('extra-info-toggle');
+const settingsResetBtnEl = document.getElementById('settings-reset-btn');
+const creditsImageEl = document.getElementById('credits-image');
+const creditsSubtextEl = document.getElementById('credits-subtext');
+const CREDITS_IMAGE_PATHS = ['img/creditos/1.png', 'img/creditos/2.png', 'img/creditos/3.png'];
+const CREDITS_SUBTEXT_POOL_URL = 'img/creditos/subcredits.json';
+const CREDITS_SUBTEXT_FALLBACK = {
+  es: [
+    'SAMPLE TEXT SAMPLE TEXT SAMPLE TEXT'
+  ],
+  en: [
+    'SAMPLE TEXT SAMPLE TEXT SAMPLE TEXT'
+  ]
+};
+let creditsSubtextPool = CREDITS_SUBTEXT_FALLBACK;
 
 // ====== i18n ======
 let translations = {};
 let currentLang = 'es';
 function t(key, vars){
-  const raw = (translations && translations[key]) ? translations[key] : key;
+  const hasKey = !!(translations && Object.prototype.hasOwnProperty.call(translations, key));
+  const raw = hasKey ? translations[key] : key;
   if(!vars) return raw;
   return Object.keys(vars).reduce((acc,k)=> acc.replaceAll(`{${k}}`, vars[k]), raw);
 }
@@ -624,6 +742,8 @@ const hintMap = {
   "vector-final-toggle": "hint.vector_final",
   "vector-final-deg": "hint.vector_deg",
   "vector-final-var": "hint.vector_var",
+  "extra-minutes-toggle": "hint.minutes_toggle",
+  "extra-minutes-input": "hint.minutes_input",
   "cas-remarks": "hint.cas_remarks"
 };
 
@@ -635,6 +755,10 @@ let missionStore = [null,null,null];
 let missionPresent = [false,false,false];
 let currentMission = 0;
 let suppressSave = false;
+let authorizeHoldTimer = null;
+let authorizeTriggered = false;
+let timeLimitTimer = null;
+let timeLimitEndMs = 0;
 
 // ====== Persistencia ======
 function loadState(){
@@ -682,6 +806,8 @@ function loadState(){
       if(typeof parsed.vectorFinalEnabled === 'boolean') vectorFinalToggleEl.checked = parsed.vectorFinalEnabled;
       if(typeof parsed.vectorFinalDeg !== 'undefined') vectorFinalDegEl.value = parsed.vectorFinalDeg;
       if(typeof parsed.vectorFinalVar !== 'undefined') vectorFinalVarEl.value = parsed.vectorFinalVar;
+      if(typeof parsed.extraMinutesEnabled === 'boolean') extraMinutesToggleEl.checked = parsed.extraMinutesEnabled;
+      if(typeof parsed.extraMinutesValue !== 'undefined') extraMinutesInputEl.value = parsed.extraMinutesValue;
       updateRemarksVisibility();
       if(parsed.openSections && typeof parsed.openSections === 'object'){
         document.querySelectorAll('details.section[data-section]').forEach(d=>{
@@ -736,6 +862,8 @@ function saveMission(){
     vectorFinalEnabled: vectorFinalToggleEl?.checked || false,
     vectorFinalDeg: vectorFinalDegEl?.value || '',
     vectorFinalVar: vectorFinalVarEl?.value || '',
+    extraMinutesEnabled: extraMinutesToggleEl?.checked || false,
+    extraMinutesValue: extraMinutesInputEl?.value || '',
     castype: castypeEls.find(c=>c.checked)?.value || ''
   };
   const inputs = [...linerFields.querySelectorAll('input[data-line]')];
@@ -769,6 +897,8 @@ function loadMission(){
   if(vectorFinalToggleEl) vectorFinalToggleEl.checked = !!m.vectorFinalEnabled;
   if(vectorFinalDegEl) vectorFinalDegEl.value = m.vectorFinalDeg || '';
   if(vectorFinalVarEl) vectorFinalVarEl.value = m.vectorFinalVar || '';
+  if(extraMinutesToggleEl) extraMinutesToggleEl.checked = !!m.extraMinutesEnabled;
+  if(extraMinutesInputEl) extraMinutesInputEl.value = m.extraMinutesValue || '';
   if(m.castype){
     castypeEls.forEach(i=> i.checked = (i.value === m.castype));
   } else {
@@ -778,8 +908,10 @@ function loadMission(){
   updateCasTypeEffects();
   updateRemarksVisibility();
   updateVectorFinalVisibility();
+  updateExtraMinutesVisibility();
   updateDangerCloseVisibility();
   updatePreauthVisibility();
+  updateTimeLimitDisplay(getTimeLimitSeconds(), false);
 }
 
 // ====== Guardar/Cargar aeronave ======
@@ -879,6 +1011,169 @@ function normalizeMunitionSelection(list){
   return [];
 }
 
+function getCommonArmaments(){
+  const parsed = parseArmamentsCsv(commonArmamentsCsv, {resolveWithCatalog: false});
+  return Array.isArray(parsed) ? parsed : [];
+}
+
+function loadCommonArmamentsCsv(){
+  const raw = localStorage.getItem(ARMAMENTS_CSV_STORAGE_KEY);
+  if(!raw) return DEFAULT_COMMON_ARMAMENTS_CSV;
+  try{
+    const parsed = parseArmamentsCsv(raw, {resolveWithCatalog: false});
+    if(Array.isArray(parsed) && parsed.length) return buildArmamentsCsvFromList(parsed);
+  }catch(e){
+    console.warn('loadCommonArmamentsCsv', e);
+  }
+  return DEFAULT_COMMON_ARMAMENTS_CSV;
+}
+
+function saveCommonArmamentsCsv(raw){
+  const safeRaw = String(raw || '').trim();
+  if(!safeRaw) return;
+  localStorage.setItem(ARMAMENTS_CSV_STORAGE_KEY, safeRaw);
+}
+
+function findCommonArmamentByName(name){
+  const norm = String(name || '').trim().toLowerCase();
+  if(!norm) return null;
+  return getCommonArmaments().find(a=> a.name.toLowerCase() === norm) || null;
+}
+
+function getSuggestedDangerCloseFor(list){
+  if(!Array.isArray(list) || !list.length) return null;
+  const distances = list.map(item=>{
+    if(item && Number.isFinite(Number(item.dangerCloseM))) return Number(item.dangerCloseM);
+    const common = findCommonArmamentByName(item?.name);
+    return common ? common.dangerCloseM : null;
+  }).filter(v=> Number.isFinite(v) && v > 0);
+  if(!distances.length) return null;
+  return Math.min(...distances);
+}
+
+function parseCsvRow(line){
+  const out = [];
+  let field = '';
+  let inQuotes = false;
+  for(let i=0;i<line.length;i++){
+    const ch = line[i];
+    if(ch === '"'){
+      if(inQuotes && line[i+1] === '"'){
+        field += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if(ch === ',' && !inQuotes){
+      out.push(field.trim());
+      field = '';
+    } else {
+      field += ch;
+    }
+  }
+  out.push(field.trim());
+  return out;
+}
+
+function escapeCsvValue(value){
+  const raw = String(value ?? '');
+  if(/[",\n]/.test(raw)) return `"${raw.replace(/"/g, '""')}"`;
+  return raw;
+}
+
+function parseArmamentsCsv(raw, options = {}){
+  const resolveWithCatalog = options.resolveWithCatalog !== false;
+  const cleanRaw = String(raw || '').replace(/^\uFEFF/, '');
+  const lines = cleanRaw.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return [];
+  const rows = lines.map(parseCsvRow).filter(cols=> cols.some(c=> c));
+  if(!rows.length) return [];
+
+  let startIdx = 0;
+  let hasTypeColumn = false;
+  const first = rows[0].map(v=>v.toLowerCase());
+  if(first[0] === 'name' || first[0] === 'armamento' || first[0] === 'weapon'){
+    if(first.includes('qty') || first.includes('cantidad')){
+      throw new Error('legacy armaments csv format not supported');
+    }
+    startIdx = 1;
+    hasTypeColumn = first.includes('type') || first.includes('tipo');
+  }
+
+  const parsed = [];
+  for(let i=startIdx; i<rows.length; i++){
+    const cols = rows[i];
+    const name = String(cols[0] || '').trim();
+    if(!name) continue;
+    const type = hasTypeColumn ? String(cols[1] || '').trim() : '';
+    const dcCol = hasTypeColumn ? 2 : 1;
+    const dcRaw = Number(String(cols[dcCol] || '').trim());
+    const common = resolveWithCatalog ? findCommonArmamentByName(name) : null;
+    const resolvedType = type || (common?.type || '');
+    const dangerCloseM = Number.isFinite(dcRaw) && dcRaw > 0 ? dcRaw : (common ? common.dangerCloseM : null);
+    parsed.push({name, type: resolvedType, dangerCloseM});
+  }
+  return parsed;
+}
+
+function buildArmamentsCsvFromList(list){
+  const header = 'name,type,dangerCloseM';
+  const rows = (Array.isArray(list) ? list : []).filter(v=>v && v.name).map(item=>{
+    const name = String(item.name || '').trim();
+    const type = String(item.type || '').trim();
+    const dc = Number.isFinite(Number(item.dangerCloseM)) ? String(Number(item.dangerCloseM)) : '';
+    return `${escapeCsvValue(name)},${escapeCsvValue(type)},${escapeCsvValue(dc)}`;
+  });
+  return [header, ...rows].join('\n');
+}
+
+function buildArmamentsCsv(){
+  return buildArmamentsCsvFromList(getCommonArmaments());
+}
+
+function applyImportedArmaments(list){
+  const clean = Array.isArray(list) ? list.filter(v=>v && v.name) : [];
+  if(!clean.length) throw new Error('empty armaments');
+
+  const names = [...new Set(clean.map(a=> a.name))];
+  if(airL4) airL4.value = names.join(', ');
+  renderMunitionOptions();
+  setSelectedMunitionList(clean.map(a=>({name: a.name, qty: ''})));
+
+  const suggested = getSuggestedDangerCloseFor(clean);
+  if(Number.isFinite(suggested) && dangerCloseToggleEl && dangerCloseDistEl){
+    dangerCloseToggleEl.checked = true;
+    dangerCloseDistEl.value = String(suggested);
+    if(dangerCloseDegEl && !(dangerCloseDegEl.value || '').trim()){
+      dangerCloseDegEl.value = '000';
+    }
+  }
+
+  updateDangerCloseVisibility();
+  saveAir();
+  saveMission();
+  saveState();
+}
+
+function renderCommonArmamentsList(){
+  if(!commonArmamentsBodyEl) return;
+  commonArmamentsBodyEl.innerHTML = '';
+  const items = getCommonArmaments();
+  items.forEach(item=>{
+    const tr = document.createElement('tr');
+    const weaponTd = document.createElement('td');
+    weaponTd.textContent = item.name;
+    const typeTd = document.createElement('td');
+    typeTd.textContent = item.type || '-';
+    const dcTd = document.createElement('td');
+    dcTd.textContent = `${item.dangerCloseM} m`;
+    tr.appendChild(weaponTd);
+    tr.appendChild(typeTd);
+    tr.appendChild(dcTd);
+    commonArmamentsBodyEl.appendChild(tr);
+  });
+}
+
 function loadAir(){
   const a = airStore[currentAir] || {};
   airL1.value = a.l1 || '';
@@ -975,14 +1270,57 @@ function syncDangerCloseFromLine8(){
   saveMission();
 }
 
+function getSystemDefaultLang(){
+  const langCandidates = (navigator.languages && navigator.languages.length)
+    ? navigator.languages
+    : [navigator.language || ''];
+  const hasSpanish = langCandidates.some(l => String(l).toLowerCase().startsWith('es'));
+  return hasSpanish ? 'es' : 'en';
+}
+
+function setRandomCreditsImage(){
+  if(!creditsImageEl || !Array.isArray(CREDITS_IMAGE_PATHS) || !CREDITS_IMAGE_PATHS.length) return;
+  const idx = Math.floor(Math.random() * CREDITS_IMAGE_PATHS.length);
+  creditsImageEl.src = CREDITS_IMAGE_PATHS[idx];
+}
+
+async function loadCreditsSubtextPool(){
+  try{
+    const res = await fetch(CREDITS_SUBTEXT_POOL_URL, {cache: 'no-cache'});
+    if(!res.ok) throw new Error(`credits pool ${res.status}`);
+    const data = await res.json();
+    if(!data || typeof data !== 'object') throw new Error('invalid credits pool');
+    const es = Array.isArray(data.es) ? data.es.filter(Boolean).map(String) : [];
+    const en = Array.isArray(data.en) ? data.en.filter(Boolean).map(String) : [];
+    creditsSubtextPool = {
+      es: es.length ? es : CREDITS_SUBTEXT_FALLBACK.es,
+      en: en.length ? en : CREDITS_SUBTEXT_FALLBACK.en
+    };
+  }catch(e){
+    console.warn('loadCreditsSubtextPool', e);
+    creditsSubtextPool = CREDITS_SUBTEXT_FALLBACK;
+  }
+  setRandomCreditsSubtext();
+}
+
+function setRandomCreditsSubtext(){
+  if(!creditsSubtextEl) return;
+  const pool = creditsSubtextPool[currentLang] || creditsSubtextPool.en || [];
+  if(!pool.length){
+    creditsSubtextEl.textContent = '';
+    return;
+  }
+  const idx = Math.floor(Math.random() * pool.length);
+  creditsSubtextEl.textContent = pool[idx];
+}
+
 // ====== Inicialización ======
 loadState();
+commonArmamentsCsv = loadCommonArmamentsCsv();
+setRandomCreditsImage();
+loadCreditsSubtextPool();
 const storedLang = localStorage.getItem('jtac_lang');
-const langCandidates = (navigator.languages && navigator.languages.length)
-  ? navigator.languages
-  : [navigator.language || ''];
-const hasSpanish = langCandidates.some(l => String(l).toLowerCase().startsWith('es'));
-const defaultLang = hasSpanish ? 'es' : 'en';
+const defaultLang = getSystemDefaultLang();
 const initialLang = storedLang || defaultLang;
 if(!storedLang) localStorage.setItem('jtac_lang', initialLang);
 if(langSelectEl) langSelectEl.value = initialLang;
@@ -992,15 +1330,32 @@ if(unitSelectEl) unitSelectEl.value = storedUnit;
 applyUnitToUI();
 langSelectEl?.addEventListener('change', ()=> loadLang(langSelectEl.value));
 unitSelectEl?.addEventListener('change', ()=> setUnit(unitSelectEl.value));
+settingsResetBtnEl?.addEventListener('click', ()=>{
+  const confirmed = window.confirm(t('settings.reset_confirm'));
+  if(!confirmed) return;
+  const systemDefaultLang = getSystemDefaultLang();
+  if(extraInfoToggleEl) extraInfoToggleEl.checked = false;
+  if(unitSelectEl) unitSelectEl.value = 'm';
+  setUnit('m');
+  if(langSelectEl) langSelectEl.value = systemDefaultLang;
+  commonArmamentsCsv = DEFAULT_COMMON_ARMAMENTS_CSV;
+  saveCommonArmamentsCsv(commonArmamentsCsv);
+  renderCommonArmamentsList();
+  loadLang(systemDefaultLang);
+});
 updateLiner();
 loadAir();
 renderMunitionOptions();
   updateRemarksVisibility();
   updateVectorFinalVisibility();
+  updateExtraMinutesVisibility();
   updateDangerCloseVisibility();
 updateCasTypeEffects();
 updateAlliesInAreaColor();
 updateKillboxVisibility();
+updateTimeLimitDisplay(getTimeLimitSeconds(), false);
+attachAuthorizeHold();
+updateAuthorizeLabel(false);
 
 // ====== Aplicar estado de secciones abiertas ======
 function applyOpenSectionsFromStorage(){
@@ -1033,6 +1388,108 @@ function updateVectorFinalVisibility(){
   if(!vectorFinalFieldsEl) return;
   const show = !!(vectorFinalToggleEl && vectorFinalToggleEl.checked);
   vectorFinalFieldsEl.classList.toggle('hidden', !show);
+}
+
+function updateExtraMinutesVisibility(){
+  if(!extraMinutesFieldsEl) return;
+  const show = !!(extraMinutesToggleEl && extraMinutesToggleEl.checked);
+  extraMinutesFieldsEl.classList.toggle('hidden', !show);
+  if(!show) stopTimeLimitCountdown();
+  if(casAuthorizeBtn) casAuthorizeBtn.classList.toggle('hidden', !show);
+  if(timeLimitDisplayEl) timeLimitDisplayEl.classList.toggle('hidden', !show);
+}
+
+function formatTimer(totalSeconds){
+  const safe = Math.max(0, Math.floor(totalSeconds));
+  const mins = Math.floor(safe / 60);
+  const secs = safe % 60;
+  return `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+}
+
+function getTimeLimitSeconds(){
+  const raw = (extraMinutesInputEl?.value || '').trim();
+  if(raw === '') return 0;
+  if(raw.includes(':')){
+    const parts = raw.split(':').map(s=>s.trim());
+    if(parts.length !== 2) return 0;
+    const mins = Number(parts[0]);
+    const secs = Number(parts[1]);
+    if(Number.isNaN(mins) || Number.isNaN(secs)) return 0;
+    if(mins < 0 || secs < 0) return 0;
+    return Math.round((mins * 60) + secs);
+  }
+  const num = Number(raw);
+  if(Number.isNaN(num) || num <= 0) return 0;
+  return Math.round(num * 60);
+}
+
+function getEngagementWindowText(){
+  if(!extraMinutesToggleEl?.checked) return '';
+  const total = getTimeLimitSeconds();
+  if(total <= 0) return '';
+  const mikes = Math.max(1, Math.ceil(total / 60));
+  return t('cas.engagement_window', {mikes});
+}
+
+function formatKillboxDisplay(rawName){
+  const name = (rawName || '').trim();
+  if(!name) return '';
+  const cleaned = name.replace(/[_\-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const m = cleaned.match(/^(.*?)(\d+)$/);
+  if(m){
+    const kbName = (m[1] || '').trim() || cleaned;
+    return `Killbox ${kbName} cuadrante ${m[2]}`.trim();
+  }
+  return `Killbox ${cleaned}`.trim();
+}
+
+function updateTimeLimitDisplay(seconds, running=false){
+  if(!timeLimitDisplayEl) return;
+  const show = seconds > 0 ? formatTimer(seconds) : '00:00';
+  timeLimitDisplayEl.textContent = show;
+  timeLimitDisplayEl.classList.toggle('running', running && seconds > 0);
+  const warn = running && seconds > 0 && seconds <= 60;
+  timeLimitDisplayEl.classList.toggle('warning', warn);
+  timeLimitDisplayEl.classList.toggle('fast', warn && seconds <= 30);
+  timeLimitDisplayEl.classList.toggle('urgent', warn && seconds <= 10);
+}
+
+function updateAuthorizeLabel(running){
+  if(!casAuthorizeBtn) return;
+  const key = running ? 'action.abort' : 'action.authorize';
+  casAuthorizeBtn.textContent = t(key);
+  casAuthorizeBtn.classList.toggle('running', running);
+}
+
+function stopTimeLimitCountdown(){
+  if(timeLimitTimer){
+    clearInterval(timeLimitTimer);
+    timeLimitTimer = null;
+  }
+  timeLimitEndMs = 0;
+  updateTimeLimitDisplay(getTimeLimitSeconds(), false);
+  updateAuthorizeLabel(false);
+}
+
+function startTimeLimitCountdown(){
+  if(!extraMinutesToggleEl?.checked) return;
+  const total = getTimeLimitSeconds();
+  if(total <= 0) return;
+  timeLimitEndMs = Date.now() + (total * 1000);
+  updateTimeLimitDisplay(total, true);
+  updateAuthorizeLabel(true);
+  if(timeLimitTimer) clearInterval(timeLimitTimer);
+  timeLimitTimer = setInterval(()=>{
+    const remaining = Math.max(0, Math.ceil((timeLimitEndMs - Date.now()) / 1000));
+    updateTimeLimitDisplay(remaining, true);
+    if(remaining <= 0){
+      stopTimeLimitCountdown();
+    }
+  }, 250);
+}
+
+function isTimeLimitRunning(){
+  return !!(timeLimitTimer || timeLimitEndMs > Date.now());
 }
 
 function updateDangerCloseVisibility(){
@@ -1249,6 +1706,44 @@ killboxInputEl?.addEventListener('input', saveMission);
 vectorFinalToggleEl?.addEventListener('change', ()=>{ updateVectorFinalVisibility(); saveMission(); });
 vectorFinalDegEl?.addEventListener('input', saveMission);
 vectorFinalVarEl?.addEventListener('input', saveMission);
+extraMinutesToggleEl?.addEventListener('change', ()=>{ updateExtraMinutesVisibility(); saveMission(); updateTimeLimitDisplay(getTimeLimitSeconds(), false); });
+extraMinutesInputEl?.addEventListener('input', ()=>{
+  if(extraMinutesInputEl){
+    extraMinutesInputEl.value = extraMinutesInputEl.value.replace(/[^\d:]/g, '');
+  }
+  saveMission();
+  updateTimeLimitDisplay(getTimeLimitSeconds(), false);
+});
+
+function attachAuthorizeHold(){
+  if(!casAuthorizeBtn) return;
+  const HOLD_MS = 700;
+  const startHold = () => {
+    authorizeTriggered = false;
+    casAuthorizeBtn.classList.add('holding');
+    if(authorizeHoldTimer) clearTimeout(authorizeHoldTimer);
+    authorizeHoldTimer = setTimeout(()=>{
+      authorizeTriggered = true;
+      casAuthorizeBtn.classList.remove('holding');
+      if(isTimeLimitRunning()){
+        stopTimeLimitCountdown();
+      } else {
+        startTimeLimitCountdown();
+      }
+    }, HOLD_MS);
+  };
+  const endHold = () => {
+    if(authorizeHoldTimer) clearTimeout(authorizeHoldTimer);
+    authorizeHoldTimer = null;
+    if(!authorizeTriggered) casAuthorizeBtn.classList.remove('holding');
+  };
+  casAuthorizeBtn.addEventListener('mousedown', startHold);
+  casAuthorizeBtn.addEventListener('touchstart', startHold, {passive:true});
+  casAuthorizeBtn.addEventListener('mouseup', endHold);
+  casAuthorizeBtn.addEventListener('mouseleave', endHold);
+  casAuthorizeBtn.addEventListener('touchend', endHold);
+  casAuthorizeBtn.addEventListener('touchcancel', endHold);
+}
 
 // ====== Validación de inputs numéricos con min/max ======
 function clampNumericInput(el){
@@ -1273,30 +1768,60 @@ function clampNumericInput(el){
 });
 
 // ====== Menú lateral ======
+let lastOpenedSubmenuId = null;
+function closeAllSubmenus(){
+  document.querySelectorAll('.submenu-panel').forEach(p=> p.classList.remove('open'));
+}
+function hasAnyOpenSubmenu(){
+  return !!document.querySelector('.submenu-panel.open');
+}
+function syncMenuBackdrop(){
+  const shouldShow = !!(leftPanel?.classList.contains('open') || hasAnyOpenSubmenu());
+  menuBackdrop?.classList.toggle('show', shouldShow);
+}
+function closeMenusFully(){
+  leftPanel?.classList.remove('open');
+  closeAllSubmenus();
+  syncMenuBackdrop();
+}
+function openRememberedSubmenuOrMenu(){
+  const panel = lastOpenedSubmenuId ? document.getElementById(lastOpenedSubmenuId) : null;
+  if(panel){
+    panel.classList.add('open');
+    leftPanel?.classList.remove('open');
+  } else {
+    leftPanel?.classList.add('open');
+  }
+  syncMenuBackdrop();
+}
 if(menuBtn && leftPanel){
   menuBtn.addEventListener('click', ()=>{
-    const isOpen = leftPanel.classList.toggle('open');
-    menuBackdrop?.classList.toggle('show', isOpen);
-    if(!isOpen){
-      document.querySelectorAll('.submenu-panel').forEach(p=> p.classList.remove('open'));
+    const hasOpenSubmenu = hasAnyOpenSubmenu();
+    const isAnyMenuOpen = leftPanel.classList.contains('open') || hasOpenSubmenu;
+    if(isAnyMenuOpen){
+      closeMenusFully();
+      return;
     }
+    openRememberedSubmenuOrMenu();
   });
 }
 
 document.querySelectorAll('.menu-btn-box').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const id = btn.getAttribute('data-submenu');
-    document.querySelectorAll('.submenu-panel').forEach(p=> p.classList.remove('open'));
+    closeAllSubmenus();
     const panel = id ? document.getElementById(id) : null;
-    if(panel) panel.classList.add('open');
-    menuBackdrop?.classList.add('show');
+    if(panel){
+      panel.classList.add('open');
+      lastOpenedSubmenuId = id;
+    }
+    leftPanel?.classList.remove('open');
+    syncMenuBackdrop();
   });
 });
 
 menuBackdrop?.addEventListener('click', ()=>{
-  leftPanel?.classList.remove('open');
-  document.querySelectorAll('.submenu-panel').forEach(p=> p.classList.remove('open'));
-  menuBackdrop.classList.remove('show');
+  closeMenusFully();
 });
 
 document.querySelectorAll('.back-btn').forEach(btn=>{
@@ -1305,6 +1830,11 @@ document.querySelectorAll('.back-btn').forEach(btn=>{
     if(id){
       const panel = document.getElementById(id);
       panel?.classList.remove('open');
+      lastOpenedSubmenuId = null;
+      if(!hasAnyOpenSubmenu()){
+        leftPanel?.classList.add('open');
+      }
+      syncMenuBackdrop();
     }
   });
 });
@@ -1413,11 +1943,13 @@ function refreshUIAfterImport(){
   updateCasTypeEffects();
   updateRemarksVisibility();
   updateVectorFinalVisibility();
+  updateExtraMinutesVisibility();
   updateDangerCloseVisibility();
   updatePreauthVisibility();
   updateAlliesInAreaColor();
   updateKillboxVisibility();
   applyOpenSectionsFromStorage();
+  updateTimeLimitDisplay(getTimeLimitSeconds(), false);
   const mode = casModeRadioEl && casModeRadioEl.checked ? 'radio' : 'texto';
   if(casOutput) genCAS(mode);
 }
@@ -1451,6 +1983,39 @@ if(importBtnEl && importExportTextEl){
     }catch(e){
       console.warn('import error', e);
       alert(t('import.error_invalid'));
+    }
+  });
+}
+
+if(exportArmamentsBtnEl && importExportTextEl){
+  exportArmamentsBtnEl.addEventListener('click', ()=>{
+    const panel = exportArmamentsBtnEl.closest('.submenu-panel');
+    panel?.classList.add('open');
+    menuBackdrop?.classList.add('show');
+    importExportTextEl.value = buildArmamentsCsv();
+    importExportTextEl.focus();
+    importExportTextEl.select();
+  });
+}
+
+if(importArmamentsBtnEl && importExportTextEl){
+  importArmamentsBtnEl.addEventListener('click', ()=>{
+    const panel = importArmamentsBtnEl.closest('.submenu-panel');
+    panel?.classList.add('open');
+    menuBackdrop?.classList.add('show');
+    const raw = (importExportTextEl.value || '').trim();
+    if(!raw) return alert(t('import.error_empty'));
+    try{
+      const normalized = parseArmamentsCsv(raw);
+      if(!normalized.length) return alert(t('import.armaments_empty'));
+      commonArmamentsCsv = buildArmamentsCsvFromList(normalized);
+      saveCommonArmamentsCsv(commonArmamentsCsv);
+      renderCommonArmamentsList();
+      applyImportedArmaments(normalized);
+      alert(t('import.armaments_success'));
+    }catch(e){
+      console.warn('import armaments error', e);
+      alert(t('import.armaments_invalid'));
     }
   });
 }
@@ -1506,6 +2071,8 @@ function applyLang(){
   applyUnitToUI();
   applyHoverHints();
   renderDictionaryPage();
+  renderCommonArmamentsList();
+  setRandomCreditsSubtext();
 }
 
 function applyHoverHints(){
@@ -1877,12 +2444,15 @@ function genCAS(mode){
     if(map[9]) lineParts.push(control === 'Tipo 3' ? `${t('cas.egress')} ${map[9]}` : formatDirection(map[9], t('cas.egress')));
     const vec = formatVectorFinal();
     const killboxName = (killboxInputEl?.value || '').trim();
-    const preauth = preauthToggleEl?.checked ? (killboxToggleEl?.checked && killboxName ? t('cas.preauth_killbox', {killbox: `<span class="danger">${t('cas.killbox')} ${killboxName}</span>`}) : t('cas.preauth')) : '';
-    const killbox = (!preauth && killboxToggleEl?.checked && killboxName) ? `<span class="danger">${t('cas.killbox')} ${killboxName}</span>` : '';
+    const engagement = getEngagementWindowText();
+    const preauthBase = preauthToggleEl?.checked ? (killboxToggleEl?.checked && killboxName ? t('cas.preauth_killbox', {killbox: `<span class="danger">${formatKillboxDisplay(killboxName)}</span>`}) : t('cas.preauth')) : '';
+    const preauth = preauthBase ? `${preauthBase}` : '';
+    const killbox = (!preauth && killboxToggleEl?.checked && killboxName) ? `<span class="danger">${formatKillboxDisplay(killboxName)}</span>` : '';
     const allies = alliesInAreaToggleEl?.checked ? `<span class="ally-text">${t('cas.allies_in_area')}</span>` : '';
     const danger = formatDangerClose();
-    if(includeRemarksEl?.checked && (preauth || allies || danger || vec || remarks)) lineParts.push(t('cas.remarks_label'));
+    if(includeRemarksEl?.checked && (preauth || engagement || allies || danger || vec || remarks)) lineParts.push(t('cas.remarks_label'));
     if(includeRemarksEl?.checked && preauth) lineParts.push(preauth);
+    if(includeRemarksEl?.checked && engagement) lineParts.push(engagement);
     if(includeRemarksEl?.checked && killbox) lineParts.push(killbox);
     if(includeRemarksEl?.checked && allies) lineParts.push(allies);
     if(includeRemarksEl?.checked && danger) lineParts.push(danger);
@@ -1935,16 +2505,19 @@ function genCAS(mode){
     if(omitL1L3El?.checked){
       out += `- ${t('cas.lines_1_3_overhead')}<br>`;
     }
-    if(includeRemarksEl?.checked && (remarks || formatVectorFinal() || preauthToggleEl?.checked || alliesInAreaToggleEl?.checked || formatDangerClose() || (killboxToggleEl?.checked && (killboxInputEl?.value || '').trim()))){
+    if(includeRemarksEl?.checked && (remarks || formatVectorFinal() || preauthToggleEl?.checked || alliesInAreaToggleEl?.checked || formatDangerClose() || getEngagementWindowText() || (killboxToggleEl?.checked && (killboxInputEl?.value || '').trim()))){
       const vec = formatVectorFinal();
       const danger = formatDangerClose();
+      const engagement = getEngagementWindowText();
       out += `<br><b>${t('cas.remarks_label')}</b><br>`;
       const kbName = (killboxInputEl?.value || '').trim();
       if(preauthToggleEl?.checked){
-        out += `${t('cas.preauth')}${(killboxToggleEl?.checked && kbName) ? ` ${t('cas.in')} <span class="danger">${t('cas.killbox')} ${kbName}</span>` : ''}<br>`;
+        const base = `${t('cas.preauth')}${(killboxToggleEl?.checked && kbName) ? ` ${t('cas.in')} <span class="danger">${formatKillboxDisplay(kbName)}</span>` : ''}`;
+        out += `${base}<br>`;
       } else if(killboxToggleEl?.checked && kbName){
-        out += `<span class="danger">${t('cas.killbox')} ${kbName}</span><br>`;
+        out += `<span class="danger">${formatKillboxDisplay(kbName)}</span><br>`;
       }
+      if(engagement) out += `${engagement}<br>`;
       if(alliesInAreaToggleEl?.checked) out += `<span class="ally-text">${t('cas.allies_in_area')}</span><br>`;
       if(danger) out += `${danger}<br>`;
       if(vec) out += `${vec}<br>`;
@@ -1990,10 +2563,14 @@ function clearAll(){
   if(vectorFinalToggleEl) vectorFinalToggleEl.checked = false;
   if(vectorFinalDegEl) vectorFinalDegEl.value = '';
   if(vectorFinalVarEl) vectorFinalVarEl.value = '';
+  if(extraMinutesToggleEl) extraMinutesToggleEl.checked = false;
+  if(extraMinutesInputEl) extraMinutesInputEl.value = '';
   updateRemarksVisibility();
   updateVectorFinalVisibility();
+  updateExtraMinutesVisibility();
   updateDangerCloseVisibility();
   updatePreauthVisibility();
+  stopTimeLimitCountdown();
   saveState();
   [...linerFields.querySelectorAll('input[data-line]')].forEach(i=> i.value='');
   casOutput.innerHTML = '';
@@ -2004,6 +2581,9 @@ function clearAll(){
 
 </body>
 </html>
+
+
+
 
 
 
