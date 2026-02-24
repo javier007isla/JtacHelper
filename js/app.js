@@ -452,6 +452,9 @@ function loadState(){
       if(typeof parsed.omitL1L3 === 'boolean' && omitL1L3El){
         omitL1L3El.checked = parsed.omitL1L3;
       }
+      if(parsed.form){
+        applyFormSnapshot(parsed.form);
+      }
       const legacyMission = getLegacyMissionFromState(parsed);
       if(legacyMission){
         missionStore[currentMission] = mergeMissions(legacyMission, missionStore[currentMission]);
@@ -463,6 +466,21 @@ function loadState(){
 
 function saveState(){
   try{
+    // Always capture current UI draft before serializing global state.
+    if(typeof currentMission === 'number' && currentMission >= 0 && currentMission < missionStore.length){
+      missionStore[currentMission] = collectMissionFromUI();
+    }
+    if(typeof currentAir === 'number' && currentAir >= 0 && currentAir < airStore.length){
+      airStore[currentAir] = {
+        l1: airL1?.value || '',
+        l2: airL2?.value || '',
+        l3: airL3?.value || '',
+        l4: airL4?.value || '',
+        l5: airL5?.value || '',
+        l6: airL6?.value || '',
+        l7: airL7?.value || ''
+      };
+    }
     const state = {
       airStore,
       airPresent,
@@ -472,7 +490,8 @@ function saveState(){
       currentMission,
       csJtac: csJtac.value,
       csGround: csGround?.value || '',
-      omitL1L3: omitL1L3El?.checked || false
+      omitL1L3: omitL1L3El?.checked || false,
+      form: captureFormSnapshot()
     };
     state.casModeRadio = !!casModeRadioEl?.checked;
     state.openSections = collectOpenSections();
@@ -481,6 +500,11 @@ function saveState(){
     localStorage.setItem('jtac_helper_state', nextJson);
     lastSavedStateJson = nextJson;
   }catch(e){console.warn('saveState error',e)}
+}
+
+function persistAllStateNow(){
+  saveState();
+  saveAtcState();
 }
 
 // ====== Guardar/Cargar misiï¿½n ======
@@ -1287,8 +1311,9 @@ setupExclusiveSlotGroup({
 if(missionStore[currentMission]) loadMission();
 
 document.querySelectorAll(DETAIL_SECTION_SELECTOR).forEach((d)=> d.addEventListener('toggle', ()=>{ if(!suppressSave) saveState(); }));
-window.addEventListener('beforeunload', saveState);
-document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'hidden') saveState(); });
+window.addEventListener('beforeunload', persistAllStateNow);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'hidden') persistAllStateNow(); });
+window.addEventListener('pagehide', ()=>{ persistAllStateNow(); });
 
 // ====== Hold-to-clear ======
 if(clearBtnEl){
@@ -1717,6 +1742,7 @@ document.addEventListener('input', (e)=>{
   if(!(e.target instanceof HTMLElement)) return;
   if(!e.target.closest('input, textarea, select')) return;
   if(e.target.id === 'import-export-text') return;
+  persistAllStateNow();
   scheduleHistorySnapshot();
 }, true);
 
@@ -1724,6 +1750,7 @@ document.addEventListener('change', (e)=>{
   if(!(e.target instanceof HTMLElement)) return;
   if(!e.target.closest('input, textarea, select')) return;
   if(e.target.id === 'import-export-text') return;
+  persistAllStateNow();
   pushHistorySnapshot();
 }, true);
 
