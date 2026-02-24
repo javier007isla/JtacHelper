@@ -122,6 +122,7 @@ let terminologyLoadError = false;
 let dictionaryManager = null;
 const FIRST_VISIT_STORAGE_KEY = 'jtac_first_visit_done';
 const APP_TAB_STORAGE_KEY = 'jtac_last_app_tab';
+const ATC_STATE_STORAGE_KEY = 'jtac_atc_state';
 let checkpointSegmentsM = [''];
 let checkpointNames = [''];
 
@@ -1930,6 +1931,41 @@ function parsePositiveNumber(raw){
   return Number.isFinite(n) && n > 0 ? n : 0;
 }
 
+function saveAtcState(){
+  const payload = {
+    speedMin: String(cpSpeedMinEl?.value || ''),
+    speedAvg: String(cpSpeedAvgEl?.value || ''),
+    speedMax: String(cpSpeedMaxEl?.value || ''),
+    segmentsM: checkpointSegmentsM.slice(),
+    names: checkpointNames.slice()
+  };
+  try{
+    localStorage.setItem(ATC_STATE_STORAGE_KEY, JSON.stringify(payload));
+  }catch(e){
+    console.warn('saveAtcState', e);
+  }
+}
+
+function loadAtcState(){
+  try{
+    const raw = localStorage.getItem(ATC_STATE_STORAGE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(cpSpeedMinEl) cpSpeedMinEl.value = String(data?.speedMin || '');
+    if(cpSpeedAvgEl) cpSpeedAvgEl.value = String(data?.speedAvg || '');
+    if(cpSpeedMaxEl) cpSpeedMaxEl.value = String(data?.speedMax || '');
+
+    if(Array.isArray(data?.segmentsM) && data.segmentsM.length){
+      checkpointSegmentsM = data.segmentsM.map((v)=> (v === '' || v === null || v === undefined) ? '' : Number(v)).map((v)=> (v === '' || (!Number.isFinite(v)) || v < 0) ? '' : v);
+    }
+    if(Array.isArray(data?.names) && data.names.length){
+      checkpointNames = data.names.map((v)=> String(v || ''));
+    }
+  }catch(e){
+    console.warn('loadAtcState', e);
+  }
+}
+
 function formatDuration(totalSeconds){
   if(!Number.isFinite(totalSeconds) || totalSeconds <= 0) return '--:--';
   const sec = Math.max(0, Math.round(totalSeconds));
@@ -2026,6 +2062,7 @@ function renderCheckpointPlanner(){
     nameInput.value = checkpointNames[index] || '';
     nameInput.addEventListener('input', ()=>{
       checkpointNames[index] = nameInput.value || '';
+      saveAtcState();
     });
     cpTd.appendChild(nameInput);
 
@@ -2044,6 +2081,7 @@ function renderCheckpointPlanner(){
       if(isFirstCheckpoint) return;
       const v = String(distInput.value || '').trim();
       checkpointSegmentsM[index] = v === '' ? '' : toMetersFromDisplayDistance(v);
+      saveAtcState();
     });
     distInput.addEventListener('change', ()=>{
       if(isFirstCheckpoint) return;
@@ -2091,6 +2129,7 @@ function renderCheckpointPlanner(){
       checkpointSegmentsM.splice(index, 1);
       checkpointNames.splice(index, 1);
       if(checkpointSegmentsM.length) checkpointSegmentsM[0] = '';
+      saveAtcState();
       renderCheckpointPlanner();
     });
 
@@ -2133,13 +2172,18 @@ if(appTabBtnEls.length){
 }
 
 [cpSpeedMinEl, cpSpeedAvgEl, cpSpeedMaxEl].forEach((el)=>{
-  el?.addEventListener('input', renderCheckpointPlanner);
+  el?.addEventListener('input', ()=>{
+    saveAtcState();
+    renderCheckpointPlanner();
+  });
 });
 checkpointAddBtnEl?.addEventListener('click', ()=>{
   checkpointSegmentsM.push('');
   checkpointNames.push('');
+  saveAtcState();
   renderCheckpointPlanner();
 });
+loadAtcState();
 renderCheckpointPlanner();
 
 if(casOutput){
